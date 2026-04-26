@@ -6,8 +6,8 @@
 <title>VA Training Guide | Mary's Team v2</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1082,6 +1082,25 @@ body {
 </nav>
 
 <script>
+/* ========== GEMINI API ========== */
+const GEMINI_KEY = 'AIzaSyA43JMQB-xmxjbp-9djUC8VVOfoEGgf0nM';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
+async function callGemini(systemPrompt, userMessage, maxTokens) {
+  const body = {
+    contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userMessage }] }],
+    generationConfig: { maxOutputTokens: maxTokens || 1000, temperature: 0.7 }
+  };
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
 let lang = 'tl';
 let audio = false;
 let curTask = null;
@@ -1200,13 +1219,8 @@ async function askBrain() {
   const brainContext = brainData.map(e => `[${e.cat.toUpperCase()}] ${e.key}: ${e.val}`).join('\n');
   const sys = `You are Mary's AI assistant. Mary has stored her personal preferences, instructions, and business rules in her "Brain". Below is everything stored in Mary's Brain:\n\n${brainContext}\n\nWhen the VA asks a question, answer it based ONLY on what Mary has stored. Be specific and quote Mary's exact preferences where possible. If the answer isn't in Mary's Brain, say "Mary hasn't added this to her Brain yet. Please ask Mary directly." Keep responses clear and direct.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: sys, messages: [{ role: 'user', content: q }] })
-    });
-    const data = await res.json();
-    ansDiv.textContent = data.content?.[0]?.text || 'Sorry, something went wrong.';
+    const reply = await callGemini(sys, q, 500);
+    ansDiv.textContent = reply || 'Sorry, something went wrong.';
   } catch(e) {
     ansDiv.textContent = 'Connection error. Please check your internet connection.';
   }
@@ -1309,15 +1323,9 @@ Mary's tone guidelines:
 
 Write ONLY the email/message content. No explanation needed.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Write a reply for this situation: ${input}` }] })
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || 'Error generating reply.';
+    const reply = await callGemini(sys, `Write a reply for this situation: ${input}`, 600);
     resultDiv.style.display = 'block';
-    resultDiv.textContent = reply;
+    resultDiv.textContent = reply || 'Error generating reply.';
   } catch(e) {
     resultDiv.style.display = 'block';
     resultDiv.textContent = 'Connection error. Please check your internet.';
@@ -1465,13 +1473,7 @@ Respond in this exact JSON format only, no other text:
 }`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: sys, messages: [{ role: 'user', content: `Work type: ${checkType}\n\nSubmitted work:\n${inputSummary}` }] })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
+    const text = await callGemini(sys, `Work type: ${checkType}\n\nSubmitted work:\n${inputSummary}`, 800);
     let parsed;
     try { parsed = JSON.parse(text.replace(/```json|```/g,'').trim()); } catch(e) { parsed = null; }
     if (parsed) {
@@ -1524,15 +1526,9 @@ async function sendChat() {
     ? 'You are the AI trainer for a VA working for Mary. Your answers must come FIRST from Mary\'s content below — her preferences, task guides, and rules. Do not give generic advice that contradicts Mary\'s instructions.\n\nWhen answering:\n- Check Mary\'s preferences first and follow them exactly.\n- Use the task guides to give accurate step-by-step help.\n- Apply Mary\'s rules when relevant.\n- If the answer is not found in Mary\'s content, say: "Mary hasn\'t added guidance on this yet — when in doubt, ask Mary directly."\n- Be warm, clear, concise. Max 4 steps when giving instructions.' + brainCtx + tasksCtx + rulesCtx
     : 'You are a patient and encouraging trainer for a new VA working for Mary, owner of a US-based sports netting company. Be warm, simple, and clear. Max 4 steps. The VA uses Method CRM, Pipedrive, Gmail, Google Drive. Key rules: reply to leads within 24 hours, always update CRM after every action, escalate complaints to Mary immediately, never guess. Remind the VA that they can upload a training file in the Brain tab to personalize these answers to Mary\'s specific rules.';
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{ role: 'user', content: msg }] })
-    });
-    const data = await res.json();
+    const reply = await callGemini(sys, msg, 600);
     typEl.remove();
-    const reply = data.content?.[0]?.text || 'Sorry, something went wrong. Please try again.';
-    addBubble(reply, 'ai');
+    addBubble(reply || 'Sorry, something went wrong. Please try again.', 'ai');
     if (audio) speak(reply);
   } catch(e) {
     typEl.remove();
@@ -1640,32 +1636,14 @@ async function findVideoForStep(step, vidDiv, task) {
   const searchHint = `${taskName} - ${step.h}: ${step.b.substring(0, 120)}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        system: `You are a YouTube video finder. Given a training step description, return ONLY a JSON object with a relevant YouTube tutorial video ID that would help a virtual assistant learn this task visually. 
-
+    const sys = `You are a YouTube video finder. Given a training step description, return ONLY a JSON object with a relevant YouTube tutorial video ID that would help a virtual assistant learn this task visually. 
 Format: {"videoId": "YOUTUBE_VIDEO_ID", "title": "Video title", "relevant": true}
-
 If no good match exists, return: {"relevant": false}
-
-Rules:
-- Only return real, well-known YouTube tutorial video IDs
-- Prefer short how-to videos (under 10 minutes)
-- Focus on practical software tutorials (Gmail, CRM, Google Drive, scheduling, email writing, etc.)
-- ONLY return the JSON object, nothing else`,
-        messages: [{ role: 'user', content: `Find a YouTube tutorial for this VA training step: "${searchHint}"` }]
-      })
-    });
-    const data = await res.json();
-    const raw = data.content?.[0]?.text || '{"relevant":false}';
+Rules: Only return real well-known YouTube tutorial video IDs. Prefer short how-to videos under 10 minutes. Focus on practical software tutorials (Gmail, CRM, Google Drive, scheduling, email writing). ONLY return the JSON object nothing else.`;
+    const raw = await callGemini(sys, `Find a YouTube tutorial for this VA training step: "${searchHint}"`, 200);
     let parsed;
     try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
     catch(e) { parsed = { relevant: false }; }
-
     videoCache[cacheKey] = parsed;
     renderVideoResult(parsed, step, vidDiv);
   } catch(e) {
@@ -2145,88 +2123,9 @@ function getSupportedMimeType() {
 
 async function processVoiceRecording() {
   if (!audioChunks.length) { setVoiceStatus('❌ No audio recorded. Try again.', 'error'); return; }
-
-  const mimeType = getSupportedMimeType() || 'audio/webm';
-  const audioBlob = new Blob(audioChunks, { type: mimeType });
-
-  // Convert to base64
-  const base64Audio = await new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.onload = () => res(reader.result.split(',')[1]);
-    reader.onerror = rej;
-    reader.readAsDataURL(audioBlob);
-  });
-
-  setVoiceStatus('🧠 AI is listening to your recording...', 'processing');
-
-  try {
-    // Use Claude's audio transcription + parsing in one shot
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 600,
-        system: `You are helping Mary add knowledge to her VA training brain. 
-The user has recorded a voice note. Your job is to:
-1. Transcribe what was said
-2. Extract the key instruction or preference
-3. Suggest the best category, a short topic label, and the full detail
-
-Respond ONLY with this JSON (no markdown, no explanation):
-{
-  "transcript": "exact words spoken",
-  "cat": one of: tone|email|boss|crm|client|pricing|schedule|other,
-  "key": "short topic label (5-8 words max)",
-  "val": "clear, complete instruction for the VA (what should they know/do)"
-}`,
-        messages: [{
-          role: 'user',
-          content: [{
-            type: 'document',
-            source: { type: 'base64', media_type: mimeType, data: base64Audio }
-          }, {
-            type: 'text',
-            text: 'Please transcribe this voice note and extract the brain entry.'
-          }]
-        }]
-      })
-    });
-
-    const data = await res.json();
-
-    // Fallback: if audio document type not supported, try text-based prompt with a note
-    if (data.error) {
-      // Retry with Web Speech API fallback transcript if available
-      throw new Error(data.error.message);
-    }
-
-    const raw = data.content?.[0]?.text || '';
-    let parsed;
-    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
-    catch(e) { throw new Error('Could not parse AI response.'); }
-
-    // Show transcript
-    const transcriptDiv = document.getElementById('voice-rec-transcript');
-    transcriptDiv.style.display = 'block';
-    transcriptDiv.textContent = '"' + parsed.transcript + '"';
-
-    // Fill in the brain form fields
-    if (parsed.cat) document.getElementById('brain-cat').value = parsed.cat;
-    if (parsed.key) document.getElementById('brain-key').value = parsed.key;
-    if (parsed.val) document.getElementById('brain-val').value = parsed.val;
-
-    setVoiceStatus('✅ Fields filled! Review and tap Save.', 'done');
-
-  } catch(err) {
-    // Fallback: use Web Speech API for transcription if available
-    if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-      setVoiceStatus('🔄 Trying browser transcription...', 'processing');
-      tryWebSpeechFallback();
-    } else {
-      setVoiceStatus('❌ Could not process audio. Try typing instead.', 'error');
-    }
-  }
+  // Gemini doesn't support raw audio — fall back to Web Speech API for transcription
+  setVoiceStatus('🔄 Using browser transcription...', 'processing');
+  tryWebSpeechFallback();
 }
 
 // Web Speech API fallback (live transcription)
@@ -2292,25 +2191,15 @@ function stopWebSpeechUI() {
 
 async function parseTranscriptWithAI(transcript) {
   setVoiceStatus('🧠 AI is filling in the fields...', 'processing');
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        system: `You help Mary add knowledge to her VA training brain. Given a transcript, extract the brain entry.
+  const sys = `You help Mary add knowledge to her VA training brain. Given a transcript, extract the brain entry.
 Respond ONLY with JSON (no markdown):
 {
-  "cat": one of: tone|email|boss|crm|client|pricing|schedule|other,
+  "cat": "tone or email or boss or crm or client or pricing or schedule or other",
   "key": "short topic label (5-8 words max)",
   "val": "clear complete instruction for the VA"
-}`,
-        messages: [{ role: 'user', content: 'Transcript: ' + transcript }]
-      })
-    });
-    const data = await res.json();
-    const raw = data.content?.[0]?.text || '';
+}`;
+  try {
+    const raw = await callGemini(sys, 'Transcript: ' + transcript, 400);
     const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
     if (parsed.cat) document.getElementById('brain-cat').value = parsed.cat;
     if (parsed.key) document.getElementById('brain-key').value = parsed.key;
@@ -2425,28 +2314,10 @@ Guidelines:
 
     setUploadProgress(45, '🤖 AI is analyzing content...');
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: 'Here is the training document content:\n\n' + extractedText }]
-      })
-    });
+    const rawText = await callGemini(systemPrompt, 'Here is the training document content:\n\n' + extractedText, 4000);
 
     setUploadProgress(75, '✍️ Building tasks, rules & quiz...');
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error?.message || 'API error ' + res.status);
-    }
-
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-
-    const rawText = data.content?.[0]?.text || '';
     let parsed;
     try {
       const clean = rawText.replace(/```json|```/g, '').trim();
