@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VA Training Guide | Mary's Team v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #F4541D;
+  --primary-light: #FEE9E1;
+  --primary-dark: #C93E10;
+  --green: #22B573;
+  --green-light: #D4F5E7;
+  --blue: #2E86DE;
+  --blue-light: #D6EAFF;
+  --purple: #8E44AD;
+  --purple-light: #EAD7F7;
+  --yellow: #F0A500;
+  --yellow-light: #FEF3D0;
+  --red: #E74C3C;
+  --red-light: #FDECEA;
+  --teal: #00B4D8;
+  --teal-light: #D0F4FF;
+  --bg: #FFF7F3;
+  --card: #FFFFFF;
+  --text: #1E1E1E;
+  --muted: #8A8A8A;
+  --border: #FDDDD0;
+  --radius: 18px;
+  --nav-h: 70px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+.hdr {
+  background: var(--primary);
+  padding: 14px 18px 10px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 16px rgba(244,84,29,0.3);
+  z-index: 50;
+}
+.hdr-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.logo { color: white; font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.logo-icon { font-size: 22px; }
+.hdr-actions { display: flex; gap: 8px; align-items: center; }
+.audio-btn {
+  background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 38px; height: 38px;
+  color: white; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all .2s;
+}
+.audio-btn.off { opacity: 0.45; }
+.lang-bar { display: flex; gap: 4px; background: rgba(0,0,0,0.15); border-radius: 30px; padding: 3px; }
+.lbtn {
+  flex: 1; background: transparent; border: none;
+  color: rgba(255,255,255,0.65); font-family: 'Nunito',sans-serif;
+  font-size: 12px; font-weight: 800; padding: 5px 10px;
+  border-radius: 24px; cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.lbtn.on { background: white; color: var(--primary); }
+.scroll { flex: 1; overflow-y: auto; padding: 18px 16px; padding-bottom: calc(var(--nav-h) + 20px); }
+.bnav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 500px;
+  background: white; border-top: 1.5px solid #F0E0D8;
+  display: flex; z-index: 50;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.07);
+  height: var(--nav-h);
+}
+.nbtn {
+  flex: 1; background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 3px; color: #C0C0C0;
+  font-family: 'Nunito',sans-serif; transition: all .2s; padding: 6px 2px;
+}
+.nbtn .ni { font-size: 22px; transition: transform .2s; }
+.nbtn .nl { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; }
+.nbtn.on { color: var(--primary); }
+.nbtn.on .ni { transform: scale(1.15); }
+.panel { display: none; }
+.panel.on { display: block; }
+.card {
+  background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 14px;
+  box-shadow: 0 3px 14px rgba(244,84,29,0.08); border: 1.5px solid var(--border);
+}
+.welcome {
+  background: linear-gradient(135deg, var(--primary) 0%, #FF8C5A 100%);
+  color: white; border-radius: 22px; padding: 24px 22px 20px;
+  margin-bottom: 20px; position: relative; overflow: hidden;
+  border: none; box-shadow: 0 6px 24px rgba(244,84,29,0.35);
+}
+.welcome::after { content:''; position:absolute; bottom:-30px; right:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.08); }
+.welcome::before { content:''; position:absolute; top:-20px; right:60px; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,0.06); }
+.welcome-emoji { font-size: 44px; margin-bottom: 10px; display: block; }
+.welcome-title { font-size: 24px; font-weight: 900; margin-bottom: 6px; line-height: 1.2; }
+.welcome-sub { font-size: 14px; opacity: 0.88; line-height: 1.6; }
+.bigbtn {
+  display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+  border-radius: 16px; border: none; font-family: 'Nunito',sans-serif;
+  cursor: pointer; transition: all .2s; width: 100%; text-align: left; margin-bottom: 10px;
+}
+.bigbtn:active { transform: scale(0.97); }
+.bigbtn-icon { font-size: 30px; flex-shrink: 0; }
+.bigbtn-text { flex: 1; }
+.bigbtn-title { font-size: 16px; font-weight: 900; }
+.bigbtn-sub { font-size: 12px; opacity: 0.75; font-weight: 600; margin-top: 1px; }
+.bigbtn-arrow { font-size: 20px; opacity: 0.6; }
+.bb-orange { background: var(--primary); color: white; box-shadow: 0 4px 16px rgba(244,84,29,0.3); }
+.bb-blue   { background: var(--blue); color: white; box-shadow: 0 4px 16px rgba(46,134,222,0.3); }
+.bb-green  { background: var(--green); color: white; box-shadow: 0 4px 16px rgba(34,181,115,0.25); }
+.bb-purple { background: var(--purple); color: white; box-shadow: 0 4px 16px rgba(142,68,173,0.3); }
+.bb-teal   { background: var(--teal); color: white; box-shadow: 0 4px 16px rgba(0,180,216,0.3); }
+.bb-yellow { background: var(--yellow); color: white; box-shadow: 0 4px 14px rgba(240,165,0,0.3); }
+.bb-outline { background: var(--primary-light); color: var(--primary); border: 2px solid var(--primary); }
+.stitle { font-size: 21px; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.sub-note { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+.tipbox { background: var(--yellow-light); border-radius: 14px; padding: 14px 16px; border-left: 5px solid var(--yellow); font-size: 14px; line-height: 1.6; font-weight: 700; }
+.task-item {
+  background: white; border: 2px solid var(--border); border-radius: 16px;
+  padding: 16px 18px; margin-bottom: 12px; display: flex; align-items: center;
+  gap: 14px; cursor: pointer; transition: all .2s;
+}
+.task-item:hover, .task-item:active { border-color: var(--primary); background: var(--primary-light); transform: translateX(5px); }
+.task-icon { font-size: 34px; flex-shrink: 0; }
+.task-info { flex: 1; }
+.task-name { font-size: 16px; font-weight: 900; }
+.task-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.task-go   { font-size: 22px; color: var(--primary); font-weight: 900; }
+.task-cat-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 16px 0 8px; }
+.back-btn {
+  background: none; border: none; color: var(--primary);
+  font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 800;
+  cursor: pointer; display: flex; align-items: center; gap: 6px;
+  margin-bottom: 14px; padding: 6px 0;
+}
+.prog-bar { background: var(--border); border-radius: 10px; height: 10px; margin-bottom: 6px; overflow: hidden; }
+.prog-fill { background: var(--primary); height: 100%; border-radius: 10px; transition: width .4s ease; }
+.step-meta { font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 16px; }
+.step-num  { font-size: 56px; font-weight: 900; color: var(--primary-light); line-height: 1; margin-bottom: 2px; text-shadow: 0 2px 0 var(--border); }
+.step-head { font-size: 21px; font-weight: 900; margin-bottom: 14px; }
+.listen-btn {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--blue-light);
+  border: none; border-radius: 10px; padding: 9px 16px; font-family: 'Nunito',sans-serif;
+  font-size: 13px; font-weight: 800; color: var(--blue); cursor: pointer; margin-bottom: 14px;
+}
+.step-body {
+  background: #F9F6F4; border-left: 5px solid var(--primary);
+  border-radius: 12px; padding: 16px; font-size: 16px;
+  line-height: 1.75; color: #333; margin-bottom: 14px;
+}
+.step-tip  { background: var(--yellow-light); border-radius: 12px; padding: 12px 16px; font-size: 14px; font-weight: 700; line-height: 1.6; margin-bottom: 14px; }
+/* VIDEO EMBED */
+.step-video { margin-bottom: 16px; }
+.video-placeholder {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 14px; overflow: hidden; position: relative;
+  padding-top: 56.25%; cursor: pointer; border: 2px solid #333;
+}
+.video-placeholder iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius: 12px; }
+.video-label { font-size: 12px; color: var(--muted); text-align: center; margin-top: 6px; font-weight: 700; }
+.step-nav { display: flex; gap: 10px; margin-top: 6px; }
+.snbtn {
+  flex: 1; padding: 15px 18px; border-radius: 14px; border: none;
+  font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900;
+  cursor: pointer; transition: all .2s; text-align: center;
+}
+.snbtn:active { transform: scale(0.97); }
+.sn-prev { background: var(--primary-light); color: var(--primary); }
+.sn-next { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(244,84,29,0.3); }
+.cat-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 20px 0 8px; }
+.rule-card {
+  background: white; border-radius: 14px; padding: 14px 16px;
+  margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--primary);
+}
+.rule-card.bl { border-color: var(--blue); }
+.rule-card.gr { border-color: var(--green); }
+.rule-card.rd { border-color: var(--red); }
+.rule-card.pu { border-color: var(--purple); }
+.rule-icon { font-size: 24px; flex-shrink: 0; }
+.rule-text { flex: 1; font-size: 15px; font-weight: 700; line-height: 1.55; }
+.rule-aud  { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--blue); flex-shrink: 0; }
+/* CHAT */
+.quick-qs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.qq {
+  background: var(--primary-light); border: 1.5px solid var(--primary);
+  border-radius: 20px; padding: 6px 12px; font-family: 'Nunito',sans-serif;
+  font-size: 12px; font-weight: 800; color: var(--primary); cursor: pointer; transition: all .2s;
+}
+.qq:active { background: var(--primary); color: white; }
+.chat-box {
+  height: 280px; overflow-y: auto; background: #F3F3F3; border-radius: 16px;
+  padding: 14px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;
+}
+.bubble { max-width: 86%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.65; }
+.bubble.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+.bubble.ai   { background: white; color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.bubble.typing { background: white; align-self: flex-start; color: var(--muted); font-style: italic; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.chat-row { display: flex; gap: 8px; }
+.chat-in {
+  flex: 1; border: 2px solid var(--border); border-radius: 14px; padding: 12px 16px;
+  font-family: 'Nunito',sans-serif; font-size: 15px; outline: none; background: white; transition: border .2s;
+}
+.chat-in:focus { border-color: var(--primary); }
+.chat-go { background: var(--primary); border: none; border-radius: 14px; color: white; width: 52px; font-size: 20px; cursor: pointer; transition: background .2s; }
+.chat-go:hover { background: var(--primary-dark); }
+.api-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; background: #F9F6F4; border-radius: 10px; padding: 10px 12px; display: none; }
+/* QUIZ */
+.qdots { display: flex; gap: 6px; margin-bottom: 18px; }
+.qdot { flex: 1; height: 8px; border-radius: 4px; background: #E0E0E0; }
+.qdot.cur { background: var(--primary); }
+.qdot.ok  { background: var(--green); }
+.qdot.ng  { background: var(--red); }
+.qtext { font-size: 18px; font-weight: 800; line-height: 1.5; margin-bottom: 20px; }
+.qopt {
+  display: flex; align-items: center; gap: 12px; padding: 13px 18px;
+  border: 2px solid var(--border); border-radius: 14px; margin-bottom: 10px;
+  cursor: pointer; font-size: 15px; font-weight: 700; transition: all .2s;
+  background: white; width: 100%; text-align: left;
+}
+.qopt:hover { border-color: var(--primary); background: var(--primary-light); }
+.qopt.ok  { border-color: var(--green); background: var(--green-light); color: #166E44; }
+.qopt.ng  { border-color: var(--red); background: var(--red-light); color: #A32B1E; }
+.qlet { width: 34px; height: 34px; border-radius: 50%; background: #F0E8E4; color: var(--primary); font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.qopt.ok .qlet { background: var(--green); color: white; }
+.qopt.ng .qlet { background: var(--red); color: white; }
+.qfb { border-radius: 14px; padding: 14px 16px; font-size: 14px; font-weight: 700; line-height: 1.6; margin-top: 14px; display: none; }
+.qfb.ok  { background: var(--green-light); color: #166E44; display: block; }
+.qfb.ng  { background: var(--red-light); color: #A32B1E; display: block; }
+.qnext { display: none; width: 100%; margin-top: 14px; padding: 15px; border-radius: 14px; border: none; background: var(--primary); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(244,84,29,0.3); }
+/* ---- REMINDERS ---- */
+.reminder-item {
+  background: white; border: 2px solid var(--green-light); border-radius: 14px;
+  padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 2px 8px rgba(34,181,115,0.08);
+}
+.reminder-item.done { border-color: var(--green); background: var(--green-light); }
+.reminder-check {
+  width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid var(--green);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  font-size: 14px; flex-shrink: 0; background: white; transition: all .2s;
+}
+.reminder-item.done .reminder-check { background: var(--green); color: white; }
+.reminder-info { flex: 1; }
+.reminder-text { font-size: 14px; font-weight: 800; line-height: 1.4; }
+.reminder-item.done .reminder-text { text-decoration: line-through; color: var(--muted); }
+.reminder-meta { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 3px; }
+.reminder-del { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--muted); padding: 2px; flex-shrink: 0; }
+/* ---- PDF LINKS ---- */
+.pdf-link-item {
+  background: white; border: 2px solid var(--blue-light); border-radius: 14px;
+  padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 2px 8px rgba(46,134,222,0.08); text-decoration: none;
+}
+.pdf-link-item:hover { border-color: var(--blue); background: var(--blue-light); }
+.pdf-link-label { flex: 1; font-size: 14px; font-weight: 800; color: var(--blue); }
+.pdf-link-del { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--muted); }
+/* ---- ADD TO DAY MODAL ---- */
+.atd-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.atd-sheet {
+  background: white; border-radius: 24px 24px 0 0; padding: 22px 20px 30px;
+  width: 100%; max-width: 500px; box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.atd-title { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+.atd-sub { font-size: 13px; color: var(--muted); font-weight: 700; margin-bottom: 16px; }
+.atd-day-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.atd-day-btn {
+  padding: 11px 6px; border-radius: 14px; border: 2px solid var(--border);
+  background: white; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
+  cursor: pointer; transition: all .18s; text-align: center; color: var(--text);
+}
+.atd-day-btn:active { transform: scale(0.95); }
+.atd-day-btn.on { background: var(--primary); border-color: var(--primary); color: white; }
+.atd-day-btn.everyday { border-color: var(--green); color: var(--green); }
+.atd-day-btn.everyday.on { background: var(--green); border-color: var(--green); color: white; }
+.atd-save {
+  width: 100%; padding: 15px; border-radius: 14px; border: none;
+  background: var(--primary); color: white; font-family: 'Nunito',sans-serif;
+  font-size: 16px; font-weight: 900; cursor: pointer; margin-bottom: 10px;
+  box-shadow: 0 4px 14px rgba(244,84,29,0.3); transition: all .2s;
+}
+.atd-cancel {
+  width: 100%; padding: 12px; border-radius: 14px; border: 2px solid var(--border);
+  background: white; font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 800;
+  cursor: pointer; color: var(--muted);
+}
+/* Add to Day button on task card */
+.task-atd-btn {
+  background: var(--primary-light); border: 1.5px solid var(--primary);
+  border-radius: 10px; padding: 5px 10px; font-family: 'Nunito',sans-serif;
+  font-size: 11px; font-weight: 900; color: var(--primary); cursor: pointer;
+  white-space: nowrap; margin-top: 5px; display: inline-block;
+  transition: all .18s;
+}
+.task-atd-btn:active { background: var(--primary); color: white; }
+.score-wrap { text-align: center; padding: 30px 10px; }
+.score-em { font-size: 70px; margin-bottom: 14px; display: block; }
+.score-big { font-size: 56px; font-weight: 900; color: var(--primary); line-height: 1; }
+.score-lbl { font-size: 15px; color: var(--muted); margin: 8px 0 16px; }
+.score-msg { font-size: 16px; font-weight: 700; line-height: 1.6; margin-bottom: 24px; }
+.retry { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: white; font-family: 'Nunito',sans-serif; font-size: 17px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 16px rgba(244,84,29,0.3); }
+
+/* ---- DAY STRIP ---- */
+.day-strip {
+  display: flex; gap: 8px; margin-bottom: 6px;
+}
+.day-pill {
+  flex: 1; background: white; border: 2px solid var(--border);
+  border-radius: 14px; padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; transition: all .2s; font-family: 'Nunito', sans-serif;
+}
+.day-pill:active { transform: scale(0.95); }
+.day-pill.active { background: var(--primary); border-color: var(--primary); }
+.day-pill.today { border-color: var(--primary); }
+.day-pill.today:not(.active) { background: var(--primary-light); }
+.day-abbr {
+  font-size: 11px; font-weight: 900; letter-spacing: .6px;
+  color: var(--muted); transition: color .2s;
+}
+.day-pill.active .day-abbr { color: white; }
+.day-pill.today:not(.active) .day-abbr { color: var(--primary); }
+.day-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: transparent; transition: background .2s;
+}
+.day-pill.has-tasks:not(.active) .day-dot { background: var(--primary); }
+.day-pill.active .day-dot { background: rgba(255,255,255,0.7); }
+.day-tasks-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px; margin-top: 10px;
+}
+.day-tasks-title {
+  font-size: 18px; font-weight: 900; color: var(--text);
+}
+.day-task-item {
+  background: white; border: 2px solid var(--border); border-radius: 16px;
+  padding: 16px 18px; margin-bottom: 12px; display: flex; align-items: center;
+  gap: 14px; cursor: pointer; transition: all .2s;
+}
+.day-task-item:hover, .day-task-item:active { border-color: var(--primary); background: var(--primary-light); transform: translateX(4px); }
+.day-task-item.done { border-color: var(--green); background: var(--green-light); }
+.day-task-icon { font-size: 32px; flex-shrink: 0; }
+.day-task-info { flex: 1; }
+.day-task-name { font-size: 15px; font-weight: 900; }
+.day-task-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.day-task-go { font-size: 22px; color: var(--primary); font-weight: 900; }
+.day-task-item.done .day-task-go { color: var(--green); }
+.day-empty {
+  text-align: center; padding: 30px 20px; color: var(--muted);
+  font-size: 15px; font-weight: 700; line-height: 1.7;
+}
+.day-empty-emoji { font-size: 44px; display: block; margin-bottom: 10px; }
+/* Step photo/audio in home day view */
+.step-photo-wrap { border-radius: 14px; overflow: hidden; margin-bottom: 4px; background: #000; }
+.step-photo-wrap img { width: 100%; border-radius: 14px; display: block; }
+.step-audio-wrap { background: var(--blue-light); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+.step-audio-wrap audio { flex: 1; height: 38px; }
+.step-audio-label { font-size: 12px; font-weight: 800; color: var(--blue); }
+/* Media label below step */
+.media-label { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 5px; text-align: center; }
+
+/* ---- BRAIN: Day Schedule Upload ---- */
+.brain-day-upload { background: white; border-radius: 16px; padding: 18px; border: 2px dashed var(--primary); margin-bottom: 16px; }
+.brain-day-upload-title { font-size: 16px; font-weight: 900; margin-bottom: 6px; color: var(--primary); }
+.brain-day-upload-sub { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+.day-select-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.day-select-btn { flex: 1; min-width: 52px; padding: 9px 6px; border-radius: 10px; border: 2px solid var(--border); background: white; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900; color: var(--muted); cursor: pointer; transition: all .2s; text-align: center; }
+.day-select-btn.on { background: var(--primary); border-color: var(--primary); color: white; }
+.media-upload-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.media-upload-box { flex: 1; min-width: 100px; background: var(--bg); border: 2px dashed var(--border); border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; transition: border-color .2s; }
+.media-upload-box:hover { border-color: var(--primary); }
+.media-upload-box input[type=file] { display: none; }
+.media-upload-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+.media-upload-label { font-size: 11px; font-weight: 800; color: var(--muted); }
+.media-preview-list { margin-bottom: 10px; }
+.media-preview-item { display: flex; align-items: center; gap: 8px; background: var(--green-light); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
+.media-preview-del { background: none; border: none; cursor: pointer; font-size: 16px; color: var(--muted); margin-left: auto; }
+.brain-day-save-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 4px; }
+.day-schedule-entries { margin-bottom: 14px; }
+.day-schedule-entry { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; border: 2px solid var(--border); }
+.day-schedule-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.day-schedule-badge { display: inline-flex; gap: 6px; align-items: center; }
+.day-schedule-day-tag { background: var(--primary-light); color: var(--primary); border-radius: 8px; padding: 3px 10px; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+.day-schedule-del { background: none; border: none; cursor: pointer; font-size: 17px; color: var(--muted); }
+.day-schedule-task-name { font-size: 15px; font-weight: 900; margin-bottom: 3px; }
+.day-schedule-steps-count { font-size: 12px; color: var(--muted); }
+.day-schedule-media-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.media-chip { background: var(--blue-light); color: var(--blue); border-radius: 8px; padding: 3px 9px; font-size: 11px; font-weight: 800; }
+
+.voice-intro { background: linear-gradient(135deg, #8E44AD 0%, #C56CE1 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(142,68,173,0.3); }
+.voice-intro h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.voice-intro p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
+.voice-section { margin-bottom: 18px; }
+.voice-section-title { font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+.email-example { background: white; border-radius: 14px; padding: 16px; border: 2px solid var(--border); margin-bottom: 10px; }
+.email-label { display: inline-block; background: var(--purple-light); color: var(--purple); border-radius: 8px; padding: 3px 10px; font-size: 11px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+.email-to { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.email-subj { font-size: 14px; font-weight: 900; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.email-body { font-size: 14px; line-height: 1.7; color: #333; }
+.copy-btn { display: flex; align-items: center; gap: 6px; background: var(--primary-light); border: 2px solid var(--primary); border-radius: 10px; padding: 8px 14px; font-family: 'Nunito',sans-serif; font-size: 13px; font-weight: 800; color: var(--primary); cursor: pointer; margin-top: 12px; }
+.copy-btn:active { background: var(--primary); color: white; }
+.tone-rule { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; border-left: 5px solid var(--purple); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.tone-do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.tone-do { background: var(--green-light); border-radius: 12px; padding: 12px; border-top: 3px solid var(--green); }
+.tone-dont { background: var(--red-light); border-radius: 12px; padding: 12px; border-top: 3px solid var(--red); }
+.tone-do-label { font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--green); margin-bottom: 8px; }
+.tone-dont-label { font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+.tone-item { font-size: 12px; font-weight: 700; line-height: 1.5; margin-bottom: 6px; color: #333; }
+
+/* ---- MARY'S BRAIN PANEL ---- */
+/* ---- EMPTY STATES ---- */
+.empty-state-box {
+  background: white; border-radius: 20px; padding: 30px 22px;
+  text-align: center; border: 2px dashed var(--border); margin-bottom: 14px;
+}
+.empty-state-emoji { font-size: 52px; display: block; margin-bottom: 12px; }
+.empty-state-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+.empty-state-body { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 18px; }
+.empty-state-btn {
+  display: inline-block; background: var(--primary); color: white;
+  border: none; border-radius: 14px; padding: 13px 24px;
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900;
+  cursor: pointer; box-shadow: 0 4px 14px rgba(244,84,29,0.3); transition: all .2s;
+}
+.empty-state-btn:active { transform: scale(0.97); }
+
+/* ---- BRAIN PANEL ---- */
+.brain-intro { background: linear-gradient(135deg, #F0A500 0%, #F7C948 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(240,165,0,0.3); }
+.brain-intro h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.brain-intro p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
+.brain-entry { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; border: 2px solid var(--border); }
+.brain-entry-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.brain-entry-cat { background: var(--yellow-light); color: var(--yellow); border-radius: 8px; padding: 3px 10px; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+.brain-entry-del { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--muted); }
+.brain-entry-key { font-size: 15px; font-weight: 900; margin-bottom: 4px; }
+.brain-entry-val { font-size: 13px; color: #555; line-height: 1.6; }
+.brain-add-form { background: white; border-radius: 16px; padding: 18px; border: 2px dashed var(--yellow); margin-bottom: 16px; }
+.brain-add-title { font-size: 16px; font-weight: 900; margin-bottom: 14px; }
+.brain-input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; background: var(--bg); transition: border .2s; }
+.brain-input:focus { border-color: var(--yellow); }
+.brain-textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; background: var(--bg); resize: vertical; min-height: 80px; transition: border .2s; }
+.brain-textarea:focus { border-color: var(--yellow); }
+.brain-save-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--yellow); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; }
+.brain-ask-section { background: var(--yellow-light); border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 2px solid var(--yellow); }
+.brain-ask-title { font-size: 14px; font-weight: 900; margin-bottom: 10px; }
+.brain-ask-row { display: flex; gap: 8px; }
+.brain-ask-in { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: white; }
+.brain-ask-in:focus { border-color: var(--yellow); }
+.brain-ask-btn { background: var(--yellow); border: none; border-radius: 12px; color: white; width: 48px; font-size: 20px; cursor: pointer; }
+.brain-answer { background: white; border-radius: 12px; padding: 14px; margin-top: 10px; font-size: 14px; line-height: 1.7; border-left: 4px solid var(--yellow); display: none; }
+
+/* ---- WORK CHECKER ---- */
+.checker-intro { background: linear-gradient(135deg, #00B4D8 0%, #0077B6 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(0,119,182,0.3); }
+.checker-intro h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.checker-intro p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
+.checker-task-btn { display: block; width: 100%; padding: 14px 18px; border-radius: 14px; border: 2px solid var(--border); background: white; font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 800; color: var(--text); cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; transition: all .2s; }
+.checker-task-btn:hover, .checker-task-btn.sel { border-color: var(--teal); background: var(--teal-light); }
+.checker-task-icon { font-size: 26px; }
+.checker-form { background: white; border-radius: 16px; padding: 18px; border: 2px solid var(--border); margin-bottom: 14px; }
+.checker-form-title { font-size: 16px; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.check-field { margin-bottom: 14px; }
+.check-label { font-size: 13px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: block; }
+.check-input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: var(--bg); transition: border .2s; }
+.check-input:focus { border-color: var(--teal); }
+.check-textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: var(--bg); resize: vertical; min-height: 100px; transition: border .2s; }
+.check-textarea:focus { border-color: var(--teal); }
+.check-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--teal); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(0,180,216,0.3); }
+.check-result { background: white; border-radius: 14px; padding: 16px; border: 2px solid var(--border); margin-top: 14px; display: none; }
+.check-result.show { display: block; }
+.check-result-title { font-size: 16px; font-weight: 900; margin-bottom: 12px; }
+.flag-item { display: flex; gap: 10px; padding: 12px; border-radius: 12px; margin-bottom: 8px; }
+.flag-item.err { background: var(--red-light); border-left: 4px solid var(--red); }
+.flag-item.warn { background: var(--yellow-light); border-left: 4px solid var(--yellow); }
+.flag-item.ok { background: var(--green-light); border-left: 4px solid var(--green); }
+.flag-icon { font-size: 20px; flex-shrink: 0; }
+.flag-text { font-size: 13px; font-weight: 700; line-height: 1.5; }
+.checker-select { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: var(--bg); transition: border .2s; cursor: pointer; }
+.checker-select:focus { border-color: var(--teal); }
+.checker-back { background: none; border: none; color: var(--teal); font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 14px; padding: 4px 0; }
+
+/* ---- UPLOAD SECTION IN BRAIN ---- */
+.brain-upload-section {
+  background: linear-gradient(135deg, #1E1E2E 0%, #2A2A3E 100%);
+  border-radius: 20px; padding: 20px; margin-bottom: 18px;
+  border: 2px solid #444; box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+.brain-upload-title { font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+.brain-upload-sub { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 16px; }
+.brain-upload-label {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.06); border: 2px dashed rgba(255,255,255,0.25);
+  border-radius: 14px; padding: 20px 16px; cursor: pointer; transition: all .2s;
+  margin-bottom: 14px; text-align: center; color: #fff; font-weight: 800; font-size: 15px;
+}
+.brain-upload-label:hover { background: rgba(255,255,255,0.12); border-color: var(--yellow); }
+.brain-upload-icon { font-size: 36px; }
+.brain-upload-label input[type=file] { display: none; }
+.brain-upload-preview { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.brain-upload-btn {
+  width: 100%; padding: 15px; border-radius: 14px; border: none;
+  background: var(--yellow); color: white; font-family: 'Nunito',sans-serif;
+  font-size: 16px; font-weight: 900; cursor: pointer; transition: all .2s;
+  box-shadow: 0 4px 16px rgba(240,165,0,0.4);
+}
+.brain-upload-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.brain-upload-btn:not(:disabled):hover { background: #d4900a; transform: translateY(-1px); }
+.upload-prog-bar { background: rgba(255,255,255,0.15); border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 8px; }
+.upload-prog-fill { background: var(--yellow); height: 100%; border-radius: 8px; transition: width .5s ease; width: 0%; }
+.upload-status { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; text-align: center; }
+.upload-result { background: rgba(34,181,115,0.2); border: 2px solid var(--green); border-radius: 14px; padding: 16px; margin-top: 10px; }
+.upload-result-title { font-size: 15px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+.upload-result-row { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
+.upload-result-badge { background: var(--green); color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 900; }
+.checker-step-hint {
+  background: linear-gradient(135deg, var(--teal-light), #e0f7ff);
+  border-radius: 14px; padding: 14px 16px; margin-bottom: 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  border-left: 5px solid var(--teal);
+}
+.checker-hint-num {
+  background: var(--teal); color: white; border-radius: 20px;
+  padding: 2px 10px; font-size: 11px; font-weight: 900;
+  white-space: nowrap; margin-top: 2px;
+}
+.checker-hint-text { font-size: 14px; font-weight: 700; color: #0077B6; line-height: 1.5; }
+.video-searching {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 14px; padding: 20px; text-align: center;
+  color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 700;
+  margin-bottom: 16px;
+}
+.video-searching-spinner { font-size: 28px; animation: vspin 1.2s linear infinite; display: block; margin-bottom: 8px; }
+@keyframes vspin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.video-not-found {
+  background: #1a1a2e; border-radius: 14px; padding: 14px 16px;
+  color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 700;
+  text-align: center; margin-bottom: 16px;
+}
+
+/* ---- VOICE RECORDER IN BRAIN ---- */
+.voice-rec-section {
+  background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+  border-radius: 16px; padding: 16px; margin-bottom: 14px;
+  border: 2px solid rgba(244,84,29,0.3);
+}
+.voice-rec-label {
+  font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.75);
+  margin-bottom: 14px; text-align: center;
+}
+.voice-rec-controls { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 10px; }
+.voice-rec-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: var(--primary); border: none; border-radius: 50%;
+  width: 72px; height: 72px; cursor: pointer; transition: all .2s;
+  box-shadow: 0 0 0 0 rgba(244,84,29,0.5); flex-shrink: 0;
+  font-family: 'Nunito', sans-serif;
+}
+.voice-rec-btn.recording {
+  background: #e74c3c;
+  animation: recpulse 1.2s ease-in-out infinite;
+}
+@keyframes recpulse {
+  0%   { box-shadow: 0 0 0 0 rgba(231,76,60,0.6); }
+  70%  { box-shadow: 0 0 0 16px rgba(231,76,60,0); }
+  100% { box-shadow: 0 0 0 0 rgba(231,76,60,0); }
+}
+.voice-rec-icon { font-size: 26px; }
+.voice-rec-btn span:last-child { font-size: 9px; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: .5px; }
+.voice-rec-wave { display: flex; align-items: center; gap: 4px; height: 40px; opacity: 0; transition: opacity .3s; }
+.voice-rec-wave.active { opacity: 1; }
+.voice-rec-wave span {
+  display: block; width: 4px; background: var(--primary);
+  border-radius: 4px; animation: wavebar 0.8s ease-in-out infinite;
+}
+.voice-rec-wave span:nth-child(1) { height: 10px; animation-delay: 0s; }
+.voice-rec-wave span:nth-child(2) { height: 24px; animation-delay: .1s; }
+.voice-rec-wave span:nth-child(3) { height: 36px; animation-delay: .2s; }
+.voice-rec-wave span:nth-child(4) { height: 20px; animation-delay: .3s; }
+.voice-rec-wave span:nth-child(5) { height: 14px; animation-delay: .4s; }
+@keyframes wavebar {
+  0%, 100% { transform: scaleY(1); }
+  50%       { transform: scaleY(1.8); }
+}
+.voice-rec-transcript {
+  background: rgba(255,255,255,0.07); border-radius: 10px;
+  padding: 10px 12px; font-size: 13px; color: rgba(255,255,255,0.85);
+  font-weight: 700; line-height: 1.5; margin-bottom: 8px; font-style: italic;
+}
+.voice-rec-status {
+  text-align: center; font-size: 12px; font-weight: 800;
+  color: rgba(255,255,255,0.5); min-height: 18px;
+}
+.voice-rec-status.processing { color: var(--yellow); }
+.voice-rec-status.done { color: var(--green); }
+.voice-rec-status.error { color: var(--red); }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-row1">
+    <div class="logo"><span class="logo-icon">📚</span> <span id="logo-text">VA Training Guide</span></div>
+    <div class="hdr-actions">
+      <button class="audio-btn" id="aud-toggle" onclick="toggleAudio()" title="Toggle Audio">🔊</button>
+    </div>
+  </div>
+  <div class="lang-bar">
+    <button class="lbtn" id="lb-en"  onclick="setLang('en')">English</button>
+    <button class="lbtn on" id="lb-tl"  onclick="setLang('tl')">Tagalog</button>
+    <button class="lbtn" id="lb-ceb" onclick="setLang('ceb')">Bisaya</button>
+  </div>
+</header>
+
+<div class="scroll">
+
+  <!-- HOME -->
+  <div class="panel on" id="p-home">
+    <div class="welcome">
+      <span class="welcome-emoji">👋</span>
+      <div class="welcome-title" id="wt"></div>
+      <div class="welcome-sub" id="ws"></div>
+    </div>
+
+    <!-- DAY SELECTOR -->
+    <div class="stitle" id="ht-start" style="margin-bottom:10px;">📅 Your Week</div>
+    <div class="day-strip">
+      <button class="day-pill" id="day-mon" onclick="selectDay('mon')"><span class="day-abbr">MON</span><span class="day-dot" id="dot-mon"></span></button>
+      <button class="day-pill" id="day-tue" onclick="selectDay('tue')"><span class="day-abbr">TUE</span><span class="day-dot" id="dot-tue"></span></button>
+      <button class="day-pill" id="day-wed" onclick="selectDay('wed')"><span class="day-abbr">WED</span><span class="day-dot" id="dot-wed"></span></button>
+      <button class="day-pill" id="day-thu" onclick="selectDay('thu')"><span class="day-abbr">THU</span><span class="day-dot" id="dot-thu"></span></button>
+      <button class="day-pill" id="day-fri" onclick="selectDay('fri')"><span class="day-abbr">FRI</span><span class="day-dot" id="dot-fri"></span></button>
+    </div>
+
+    <!-- DAY TASKS VIEW -->
+    <div id="day-tasks-panel" style="display:none;">
+      <div class="day-tasks-header">
+        <button class="back-btn" onclick="closeDayPanel()" style="margin-bottom:0;">← Back</button>
+        <div id="day-tasks-title" class="day-tasks-title"></div>
+      </div>
+      <div id="day-tasks-list"></div>
+      <!-- Day Step View (inside home) -->
+      <div id="day-step-view" style="display:none;">
+        <button class="back-btn" onclick="backToDayTasks()">← Back to Day Tasks</button>
+        <div class="prog-bar"><div class="prog-fill" id="day-prog"></div></div>
+        <div class="step-meta" id="day-step-meta"></div>
+        <div class="step-num" id="day-step-num"></div>
+        <div class="step-head" id="day-step-head"></div>
+        <button class="listen-btn" onclick="speakDayStep()">🔊 Listen</button>
+        <!-- Photo / image for step -->
+        <div id="day-step-photo" style="display:none; margin-bottom:14px;"></div>
+        <!-- Audio player for step -->
+        <div id="day-step-audio" style="display:none; margin-bottom:14px;"></div>
+        <!-- Video for step -->
+        <div id="day-step-video" class="step-video" style="display:none;"></div>
+        <div class="step-body" id="day-step-body"></div>
+        <div class="step-tip" id="day-step-tip"></div>
+        <div id="day-step-pdf-links" style="display:none; margin-bottom:14px; background:#F0F6FF; border-radius:14px; padding:12px 14px;"></div>
+        <div class="step-nav">
+          <button class="snbtn sn-prev" id="day-prev-btn" onclick="dayPrevStep()">← Prev</button>
+          <button class="snbtn sn-next" id="day-next-btn" onclick="dayNextStep()">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK LINKS (shown when no day selected) -->
+    <div id="home-quick-links">
+      <div class="stitle" style="margin-top:18px; margin-bottom:10px;">🚀 Quick Access</div>
+      <button class="bigbtn bb-orange" onclick="goTab('tasks')">
+        <span class="bigbtn-icon">📋</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Task Guide</div><div class="bigbtn-sub">Step-by-step instructions</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <button class="bigbtn bb-purple" onclick="goTab('voice')">
+        <span class="bigbtn-icon">🗣️</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Mary's Voice & Tone</div><div class="bigbtn-sub">How to write & reply like Mary</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <button class="bigbtn bb-blue" onclick="goTab('rules')">
+        <span class="bigbtn-icon">📌</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Rules & Reminders</div><div class="bigbtn-sub">Important things to always remember</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <button class="bigbtn bb-yellow" onclick="goTab('brain')">
+        <span class="bigbtn-icon">🧠</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Mary's Brain</div><div class="bigbtn-sub">Ask what Mary prefers</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <button class="bigbtn bb-teal" onclick="goTab('checker')">
+        <span class="bigbtn-icon">✅</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Work Checker</div><div class="bigbtn-sub">AI checks your work for errors</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <button class="bigbtn bb-green" onclick="goTab('ask')">
+        <span class="bigbtn-icon">💬</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Ask AI Trainer</div><div class="bigbtn-sub">Get quick help anytime</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <button class="bigbtn bb-outline" onclick="goTab('quiz')">
+        <span class="bigbtn-icon">🎯</span>
+        <div class="bigbtn-text"><div class="bigbtn-title">Quiz</div><div class="bigbtn-sub">Test your knowledge</div></div>
+        <span class="bigbtn-arrow">›</span>
+      </button>
+      <div class="tipbox" style="margin-top:6px" id="home-tip">💡 Tap a day above to see your tasks for that day!</div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="panel" id="p-tasks">
+    <div id="task-list-view">
+      <div class="stitle">📋 Task Guide</div>
+      <div class="sub-note">Tap any task to see step-by-step instructions with video guides.</div>
+      <div id="task-list"></div>
+    </div>
+    <div id="step-view" style="display:none">
+      <button class="back-btn" onclick="backToTasks()">← Back to Tasks</button>
+      <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+      <div class="step-meta" id="step-meta"></div>
+      <div class="step-num" id="step-num"></div>
+      <div class="step-head" id="step-head"></div>
+      <button class="listen-btn" onclick="speakStep()">🔊 Listen</button>
+      <div id="step-video" class="step-video" style="display:none"></div>
+      <div class="step-body" id="step-body"></div>
+      <div class="step-tip" id="step-tip"></div>
+      <div id="step-pdf-links" style="display:none; margin-bottom:14px; background:#F0F6FF; border-radius:14px; padding:12px 14px;"></div>
+      <div class="step-nav">
+        <button class="snbtn sn-prev" id="prev-btn" onclick="prevStep()">← Prev</button>
+        <button class="snbtn sn-next" id="next-btn" onclick="nextStep()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARY'S VOICE -->
+  <div class="panel" id="p-voice">
+    <div class="voice-intro">
+      <h2>🗣️ Mary's Voice & Tone</h2>
+      <p>Mary adds her writing style, email templates, and do's &amp; don'ts here. The VA reads this to communicate exactly like Mary.</p>
+    </div>
+
+    <!-- DO / DON'T section — only shows when Mary has added entries -->
+    <div id="voice-style-section" style="display:none;">
+      <div class="voice-section-title">✍️ Mary's Writing Style</div>
+      <div class="tone-do-dont" id="voice-do-dont"></div>
+    </div>
+
+    <!-- Email Templates — only shows when saved -->
+    <div id="voice-templates-section" style="display:none;">
+      <div class="voice-section-title">📧 Email Templates</div>
+      <div id="email-templates"></div>
+    </div>
+
+    <!-- Quick Reply Phrases — only shows when saved -->
+    <div id="voice-phrases-section" style="display:none;">
+      <div class="voice-section-title">💬 Quick Reply Phrases</div>
+      <div id="reply-phrases"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="voice-empty-state">
+      <div class="empty-state-box">
+        <div class="empty-state-emoji">🗣️</div>
+        <div class="empty-state-title">Nothing here yet!</div>
+        <div class="empty-state-body">Mary hasn't added her voice &amp; tone guidelines yet.<br><br>
+          <strong>Mary:</strong> Go to 🧠 <strong>Brain</strong> → upload your training file, or add your preferences manually. They will appear here automatically!
+        </div>
+        <button class="empty-state-btn" onclick="goTab('brain')">Go to Mary's Brain →</button>
+      </div>
+    </div>
+
+    <!-- AI Reply Generator — always visible -->
+    <div class="card" style="background:var(--purple-light); border-color: var(--purple); margin-top:14px;">
+      <div style="font-size:15px; font-weight:900; margin-bottom:8px; color:var(--purple);">🤖 Generate a Reply in Mary's Tone</div>
+      <div style="font-size:13px; color:#555; margin-bottom:10px;">Describe the situation — AI will write a reply that sounds like Mary.</div>
+      <textarea id="voice-ai-input" class="brain-textarea" placeholder="Example: A customer is asking about the price of baseball netting, size 40x70 feet..."></textarea>
+      <button onclick="generateVoiceReply()" style="width:100%; padding:14px; border-radius:14px; border:none; background:var(--purple); color:white; font-family:'Nunito',sans-serif; font-size:16px; font-weight:900; cursor:pointer;">✨ Write Reply in Mary's Tone</button>
+      <div id="voice-ai-result" class="brain-answer" style="border-color:var(--purple); margin-top:10px; display:none;"></div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="panel" id="p-rules">
+    <div class="stitle">📌 Rules & Reminders</div>
+    <div class="sub-note">These are the most important rules. Follow them every single day.</div>
+
+    <!-- ✅ CHECK THIS EVERYDAY -->
+    <div class="card" id="everyday-section" style="border-color:var(--green); border-width:2px; padding:0; overflow:hidden; margin-bottom:16px;">
+      <div style="background:var(--green); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="toggleEveryday()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px;">✅</span>
+          <div>
+            <div style="color:white; font-size:16px; font-weight:900;">Check This Everyday</div>
+            <div style="color:rgba(255,255,255,0.8); font-size:12px; font-weight:700;">Your daily reminders & to-do's</div>
+          </div>
+        </div>
+        <span id="everyday-chevron" style="color:white; font-size:20px; transition:transform .3s;">▼</span>
+      </div>
+      <div id="everyday-body" style="padding:16px 18px;">
+        <!-- Reminder list -->
+        <div id="reminder-list"></div>
+        <!-- Add reminder form -->
+        <div id="add-reminder-form" style="background:#F9F9F9; border-radius:14px; padding:14px; margin-top:10px; border:2px dashed var(--border);">
+          <div style="font-size:13px; font-weight:900; color:var(--green); margin-bottom:10px;">➕ Add a Reminder</div>
+          <input type="text" id="reminder-text" class="brain-input" placeholder="What to check / do every day (e.g. Check unread emails)" style="margin-bottom:8px;">
+          <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+            <select id="reminder-day" class="brain-input" style="flex:1; min-width:130px; cursor:pointer;">
+              <option value="everyday">📅 Every Day</option>
+              <option value="mon">Monday</option>
+              <option value="tue">Tuesday</option>
+              <option value="wed">Wednesday</option>
+              <option value="thu">Thursday</option>
+              <option value="fri">Friday</option>
+              <option value="specific">📆 Specific Date</option>
+            </select>
+            <input type="time" id="reminder-time" class="brain-input" style="flex:1; min-width:120px;" placeholder="Time (optional)">
+          </div>
+          <div id="reminder-date-row" style="display:none; margin-bottom:8px;">
+            <input type="date" id="reminder-date" class="brain-input">
+          </div>
+          <button onclick="addReminder()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--green); color:white; font-family:'Nunito',sans-serif; font-size:14px; font-weight:900; cursor:pointer;">💾 Save Reminder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF GUIDE LINKS -->
+    <div class="card" id="pdf-links-section" style="border-color:var(--blue); border-width:2px; padding:0; overflow:hidden; margin-bottom:16px;">
+      <div style="background:var(--blue); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="togglePdfLinks()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px;">📎</span>
+          <div>
+            <div style="color:white; font-size:16px; font-weight:900;">PDF Guide Links</div>
+            <div style="color:rgba(255,255,255,0.8); font-size:12px; font-weight:700;">Quick access to reference files</div>
+          </div>
+        </div>
+        <span id="pdf-links-chevron" style="color:white; font-size:20px; transition:transform .3s;">▼</span>
+      </div>
+      <div id="pdf-links-body" style="padding:16px 18px;">
+        <div id="pdf-link-list"></div>
+        <div style="background:#F0F6FF; border-radius:14px; padding:14px; margin-top:10px; border:2px dashed #BDDAFF;">
+          <div style="font-size:13px; font-weight:900; color:var(--blue); margin-bottom:10px;">➕ Add a PDF / File Link</div>
+          <input type="text" id="pdf-link-label" class="brain-input" placeholder="Label (e.g. Pricing Guide, SOP Manual)" style="margin-bottom:8px;">
+          <input type="url" id="pdf-link-url" class="brain-input" placeholder="Paste URL or Google Drive link here" style="margin-bottom:8px;">
+          <button onclick="addPdfLink()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--blue); color:white; font-family:'Nunito',sans-serif; font-size:14px; font-weight:900; cursor:pointer;">🔗 Save Link</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="rules-list"></div>
+  </div>
+
+  <!-- MARY'S BRAIN -->
+  <div class="panel" id="p-brain">
+    <div class="brain-intro">
+      <h2>🧠 Mary's Brain</h2>
+      <p>Mary — type your preferences, instructions, and important info here. Your VA can then ask the AI and get EXACTLY what you told it.</p>
+    </div>
+
+    <div class="brain-ask-section">
+      <div class="brain-ask-title">💬 VA: Ask Mary's Brain a Question</div>
+      <div class="brain-ask-row">
+        <input type="text" id="brain-ask-input" class="brain-ask-in" placeholder="e.g. How does Mary want us to greet customers?">
+        <button class="brain-ask-btn" onclick="askBrain()">➤</button>
+      </div>
+      <div id="brain-answer" class="brain-answer"></div>
+    </div>
+
+    <!-- UPLOAD SECTION -->
+    <div class="brain-upload-section">
+      <div class="brain-upload-title">📤 Upload File to Generate Content</div>
+      <div class="brain-upload-sub">Upload a PDF, video, or audio file — AI will automatically create Tasks, Rules, and Quiz from it.</div>
+      <label class="brain-upload-label" id="upload-label">
+        <span class="brain-upload-icon">📁</span>
+        <span id="upload-filename">Choose PDF, Video, or Audio</span>
+        <input type="file" id="brain-file-input" accept=".pdf,.mp4,.mov,.avi,.mp3,.wav,.m4a,.webm" onchange="handleFileSelect(this)">
+      </label>
+      <div id="upload-preview" style="display:none;" class="brain-upload-preview"></div>
+      <button class="brain-upload-btn" id="brain-upload-btn" onclick="processUploadedFile()" disabled>
+        🚀 Upload & Generate Tasks, Rules & Quiz
+      </button>
+      <div id="upload-progress" style="display:none;">
+        <div class="upload-prog-bar"><div class="upload-prog-fill" id="upload-prog-fill"></div></div>
+        <div id="upload-status" class="upload-status">🧠 Reading your file...</div>
+      </div>
+      <div id="upload-result" style="display:none;" class="upload-result"></div>
+    </div>
+
+    <!-- DAY SCHEDULE BUILDER -->
+    <div class="brain-day-upload">
+      <div class="brain-day-upload-title">📅 Build Daily Task Schedule</div>
+      <div class="brain-day-upload-sub">Mary — add tasks for each day of the week. Each task can have a step-by-step guide with photos, audio, and video. The VA will see them on the Home screen under each day.</div>
+
+      <div class="brain-add-title" style="font-size:14px; margin-bottom:8px;">1️⃣ Pick the day:</div>
+      <div class="day-select-row" id="brain-day-select">
+        <button class="day-select-btn" id="bds-mon" onclick="toggleBrainDay('mon')">MON</button>
+        <button class="day-select-btn" id="bds-tue" onclick="toggleBrainDay('tue')">TUE</button>
+        <button class="day-select-btn" id="bds-wed" onclick="toggleBrainDay('wed')">WED</button>
+        <button class="day-select-btn" id="bds-thu" onclick="toggleBrainDay('thu')">THU</button>
+        <button class="day-select-btn" id="bds-fri" onclick="toggleBrainDay('fri')">FRI</button>
+      </div>
+
+      <div class="brain-add-title" style="font-size:14px; margin-bottom:8px; margin-top:10px;">2️⃣ Task name & steps:</div>
+      <input type="text" id="day-task-name" class="brain-input" placeholder="Task name (e.g. Check & Reply to Emails)">
+      
+      <div id="day-steps-list" style="margin-bottom:10px;"></div>
+      <button onclick="addDayStep()" style="width:100%; padding:10px; border-radius:12px; border:2px dashed var(--border); background:white; font-family:'Nunito',sans-serif; font-size:13px; font-weight:800; color:var(--muted); cursor:pointer; margin-bottom:10px;">+ Add Step</button>
+
+      <div class="brain-add-title" style="font-size:14px; margin-bottom:8px;">3️⃣ Attach media (optional):</div>
+      <div class="media-upload-row">
+        <label class="media-upload-box">
+          <input type="file" accept="image/*" multiple onchange="handleDayMedia('photo', this)">
+          <span class="media-upload-icon">📷</span>
+          <span class="media-upload-label">Photos</span>
+        </label>
+        <label class="media-upload-box">
+          <input type="file" accept="audio/*" multiple onchange="handleDayMedia('audio', this)">
+          <span class="media-upload-icon">🎵</span>
+          <span class="media-upload-label">Audio</span>
+        </label>
+        <label class="media-upload-box">
+          <input type="text" style="display:none" id="day-video-url-input">
+          <span class="media-upload-icon" onclick="promptVideoUrl()">🎬</span>
+          <span class="media-upload-label" onclick="promptVideoUrl()">Video URL</span>
+        </label>
+      </div>
+      <div id="day-media-preview" class="media-preview-list"></div>
+
+      <button class="brain-day-save-btn" onclick="saveDayTask()">💾 Save to Day Schedule</button>
+    </div>
+
+    <div class="voice-section-title" style="padding: 0 2px; margin-bottom:10px;">📅 Saved Day Schedules</div>
+    <div id="day-schedule-entries" class="day-schedule-entries"></div>
+
+
+      <div class="brain-add-title">➕ Mary: Add to My Brain</div>
+      <select id="brain-cat" class="brain-input" style="cursor:pointer;">
+        <option value="tone">💬 Communication Tone</option>
+        <option value="email">📧 Email Preferences</option>
+        <option value="boss">👔 How to Talk to Boss</option>
+        <option value="crm">🗂️ CRM Preferences</option>
+        <option value="client">👤 Client-Specific Rules</option>
+        <option value="pricing">💰 Pricing & Quotes</option>
+        <option value="schedule">📅 Schedule Rules</option>
+        <option value="other">📌 Other</option>
+      </select>
+      <input type="text" id="brain-key" class="brain-input" placeholder="Topic / Short label (e.g. 'How to greet clients')">
+      <textarea id="brain-val" class="brain-textarea" placeholder="What should the VA know? Be specific and detailed. Example: Always greet clients with their first name. Use 'Hi [Name]!' not 'Dear [Name].'"></textarea>
+      <!-- VOICE RECORDER -->
+      <div class="voice-rec-section">
+        <div class="voice-rec-label">🎙️ Or speak it — AI will fill in the fields for you</div>
+        <div class="voice-rec-controls">
+          <button class="voice-rec-btn" id="voice-rec-btn" onclick="toggleVoiceRecord()">
+            <span class="voice-rec-icon" id="voice-rec-icon">🎙️</span>
+            <span id="voice-rec-text">Hold to Record</span>
+          </button>
+          <div class="voice-rec-wave" id="voice-rec-wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div id="voice-rec-transcript" class="voice-rec-transcript" style="display:none"></div>
+        <div id="voice-rec-status" class="voice-rec-status"></div>
+      </div>
+      <button class="brain-save-btn" onclick="saveBrainEntry()">💾 Save to Mary's Brain</button>
+    </div>
+
+    <div class="voice-section-title" style="padding: 0 2px;">🧠 Stored Knowledge</div>
+    <div id="brain-entries"></div>
+  </div>
+
+  <!-- ASK AI -->
+  <div class="panel" id="p-ask">
+    <div class="stitle">💬 Ask AI Trainer</div>
+    <div class="sub-note" id="ap-sub">Ask anything about your tasks. The AI trainer will guide you step by step.</div>
+    <div class="quick-qs" id="quick-qs"></div>
+    <div class="chat-box" id="chat-box">
+      <div class="bubble ai" id="ai-intro">Hi! I'm your AI trainer. Ask me anything about your tasks, CRM, emails, or anything work-related! 😊</div>
+    </div>
+    <div class="chat-row">
+      <input type="text" id="chat-in" class="chat-in" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-go" onclick="sendChat()">➤</button>
+    </div>
+    <div class="api-note" id="api-note">⚠️ The AI trainer requires an internet connection and API access. Please check your connection.</div>
+  </div>
+
+  <!-- WORK CHECKER -->
+  <div class="panel" id="p-checker">
+    <div class="checker-intro">
+      <h2>✅ AI Work Checker</h2>
+      <p>Paste your work here and the AI will check it before you send it to Mary or a customer.</p>
+    </div>
+
+    <!-- Empty state shown when no tasks uploaded yet -->
+    <div id="checker-empty-state">
+      <div class="empty-state-box">
+        <div class="empty-state-emoji">✅</div>
+        <div class="empty-state-title">Set up Work Checker first!</div>
+        <div class="empty-state-body">
+          To use the Work Checker, Mary needs to upload a training file first.<br><br>
+          Once uploaded, the AI will know exactly what to check based on Mary's rules!
+        </div>
+        <button class="empty-state-btn" onclick="goTab('brain')">Upload Training File →</button>
+      </div>
+    </div>
+
+    <!-- Real checker — shown after content is loaded -->
+    <div id="checker-task-select" style="display:none;">
+      <div class="checker-step-hint">
+        <div class="checker-hint-num">Step 1</div>
+        <div class="checker-hint-text">Choose what type of work you finished — then paste it in. AI will check it! 👇</div>
+      </div>
+      <div id="checker-type-btns"></div>
+    </div>
+    <div id="checker-form-area" style="display:none"></div>
+    <div id="check-result" class="check-result"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="panel" id="p-quiz">
+    <div class="stitle">🎯 Quiz</div>
+    <div id="quiz-view">
+      <div class="qdots" id="qdots"></div>
+      <div class="qtext" id="qtext"></div>
+      <div id="qopts"></div>
+      <div class="qfb" id="qfb"></div>
+      <button class="qnext" id="qnext" onclick="nextQ()">Next →</button>
+    </div>
+    <div id="quiz-score" style="display:none">
+      <div class="score-wrap">
+        <span class="score-em" id="sc-em"></span>
+        <div class="score-big" id="sc-big"></div>
+        <div class="score-lbl" id="sc-lbl"></div>
+        <div class="score-msg" id="sc-msg"></div>
+        <button class="retry" onclick="initQuiz()">Try Again 🔄</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /scroll -->
+
+<!-- ADD TO DAY MODAL -->
+<div class="atd-overlay" id="atd-overlay" style="display:none;" onclick="closeAtdModal(event)">
+  <div class="atd-sheet" onclick="event.stopPropagation()">
+    <div class="atd-title">📅 Add to Day Schedule</div>
+    <div class="atd-sub" id="atd-task-name">Pick which day(s) to add this task to:</div>
+    <div class="atd-day-grid">
+      <button class="atd-day-btn everyday" id="atd-everyday" onclick="toggleAtdDay('everyday')">📅 Every Day</button>
+      <button class="atd-day-btn" id="atd-mon" onclick="toggleAtdDay('mon')">MON</button>
+      <button class="atd-day-btn" id="atd-tue" onclick="toggleAtdDay('tue')">TUE</button>
+      <button class="atd-day-btn" id="atd-wed" onclick="toggleAtdDay('wed')">WED</button>
+      <button class="atd-day-btn" id="atd-thu" onclick="toggleAtdDay('thu')">THU</button>
+      <button class="atd-day-btn" id="atd-fri" onclick="toggleAtdDay('fri')">FRI</button>
+    </div>
+    <button class="atd-save" onclick="confirmAddToDay()">💾 Save to Schedule</button>
+    <button class="atd-cancel" onclick="closeAtdModal()">Cancel</button>
+  </div>
+</div>
+
+<nav class="bnav">
+  <button class="nbtn on" id="nb-home" onclick="goTab('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
+  <button class="nbtn" id="nb-tasks" onclick="goTab('tasks')"><span class="ni">📋</span><span class="nl">Tasks</span></button>
+  <button class="nbtn" id="nb-voice" onclick="goTab('voice')"><span class="ni">🗣️</span><span class="nl">Voice</span></button>
+  <button class="nbtn" id="nb-brain" onclick="goTab('brain')"><span class="ni">🧠</span><span class="nl">Brain</span></button>
+  <button class="nbtn" id="nb-checker" onclick="goTab('checker')"><span class="ni">✅</span><span class="nl">Check</span></button>
+  <button class="nbtn" id="nb-ask" onclick="goTab('ask')"><span class="ni">💬</span><span class="nl">Ask AI</span></button>
+  <button class="nbtn" id="nb-rules" onclick="goTab('rules')"><span class="ni">📌</span><span class="nl">Rules</span></button>
+  <button class="nbtn" id="nb-quiz" onclick="goTab('quiz')"><span class="ni">🎯</span><span class="nl">Quiz</span></button>
+</nav>
+
+<script>
+let lang = 'tl';
+let audio = false;
+let curTask = null;
+let curStep = 0;
+let curQ = 0;
+let qAnswers = [];
+let brainData = [];
+let checkerType = null;
+
+/* ========== TASKS DATA ========== */
+// Tasks are empty by default — upload a PDF/video/audio in Mary's Brain to auto-generate!
+const TASKS = {
+  en: [
+    // placeholder — will be replaced by AI-generated tasks from uploaded files
+    { cat:"📤 Get Started", icon:"🧠", name:"Upload a File to Generate Tasks", sub:"Go to Mary's Brain and upload a PDF, video, or audio",
+      steps:[
+        { n:"1", h:"Go to Mary's Brain", b:"Tap the 🧠 Brain tab at the bottom. Scroll down to find the '📤 Upload File to Generate Content' section.", tip:"💡 Tip: You can upload a PDF, MP4 video, or audio file (MP3/WAV).", vid: null },
+        { n:"2", h:"Upload Your Training File", b:"Tap 'Choose File' and select your PDF, video, or audio. Then tap 'Upload & Generate'. The AI will read it and automatically create tasks, rules, and quiz questions.", tip:"✅ Once done, all tabs will be updated automatically with your content!", vid: null }
+      ]
+    }
+  ]
+};
+
+// Copy English tasks for tl/ceb (same structure, guide uses English for now)
+TASKS.tl = TASKS.en;
+TASKS.ceb = TASKS.en;
+
+/* ========== EMAIL TEMPLATES ========== */
+// Empty by default — populated from Mary's Brain / uploaded files
+let EMAIL_TEMPLATES = [];
+
+/* ========== RULES ========== */
+// Rules are empty by default — upload a file in Mary's Brain to auto-generate!
+const RULES = {
+  en: [
+    { cat:"📤 Upload to Generate", cl:"", icon:"📤", t:"No rules yet. Go to Mary's Brain and upload a PDF, video, or audio file to automatically generate rules here." },
+  ]
+};
+RULES.tl = RULES.en;
+RULES.ceb = RULES.en;
+
+/* ========== QUIZ ========== */
+// Quiz is empty by default — upload a file in Mary's Brain to auto-generate!
+const QUIZ = {
+  en: [
+    { q:"No quiz yet! Upload a file in Mary's Brain to auto-generate quiz questions.", opts:["Got it!","OK","Understood","Let's go!"], ans:0, fb:"Go to the 🧠 Brain tab and upload a PDF, video, or audio file to generate a quiz automatically." },
+  ]
+};
+QUIZ.tl = QUIZ.en;
+QUIZ.ceb = QUIZ.en;
+
+const QQ = {
+  en: ["What do I do first?","How do I update CRM?","What if I make a mistake?","What do I say to customers?","How do I follow up?","How do I write a daily report?"],
+  tl: ["Ano ang gagawin ko muna?","Paano mag-update ng CRM?","Paano kung nagkamali ako?","Ano ang sasabihin ko sa customer?","Paano mag-follow up?","Paano magsulat ng daily report?"],
+  ceb: ["Unsa ang buhaton ko una?","Unsaon pag-update sa CRM?","Unsa kung nakasayop ko?","Unsa ang isulti sa customer?","Unsaon pag-follow up?","Unsaon pagsulat sa daily report?"]
+};
+
+/* ========== BRAIN DATA ========== */
+function loadBrain() {
+  try { brainData = JSON.parse(localStorage.getItem('maryBrain') || '[]'); } catch(e) { brainData = []; }
+}
+function saveBrainToStorage() {
+  try { localStorage.setItem('maryBrain', JSON.stringify(brainData)); } catch(e) {}
+}
+function saveBrainEntry() {
+  const key = document.getElementById('brain-key').value.trim();
+  const val = document.getElementById('brain-val').value.trim();
+  const cat = document.getElementById('brain-cat').value;
+  if (!key || !val) { alert('Please fill in both the topic and the information.'); return; }
+  brainData.push({ id: Date.now(), cat, key, val });
+  saveBrainToStorage();
+  document.getElementById('brain-key').value = '';
+  document.getElementById('brain-val').value = '';
+  renderBrainEntries();
+  showBrainSaved();
+}
+function showBrainSaved() {
+  const btn = document.querySelector('.brain-save-btn');
+  btn.textContent = '✅ Saved to Mary\'s Brain!';
+  btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = '💾 Save to Mary\'s Brain'; btn.style.background = 'var(--yellow)'; }, 2000);
+}
+function deleteBrainEntry(id) {
+  brainData = brainData.filter(e => e.id !== id);
+  saveBrainToStorage();
+  renderBrainEntries();
+}
+function renderBrainEntries() {
+  const container = document.getElementById('brain-entries');
+  if (!brainData.length) {
+    container.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:14px; padding:20px 0; font-weight:700;">No entries yet. Mary — add your first preference above! 👆</div>';
+    return;
+  }
+  const catLabels = { tone:'💬 Tone', email:'📧 Email', boss:'👔 Boss', crm:'🗂️ CRM', client:'👤 Client', pricing:'💰 Pricing', schedule:'📅 Schedule', other:'📌 Other' };
+  container.innerHTML = brainData.map(e => `
+    <div class="brain-entry">
+      <div class="brain-entry-header">
+        <span class="brain-entry-cat">${catLabels[e.cat]||'📌'}</span>
+        <button class="brain-entry-del" onclick="deleteBrainEntry(${e.id})">🗑️</button>
+      </div>
+      <div class="brain-entry-key">${e.key}</div>
+      <div class="brain-entry-val">${e.val}</div>
+    </div>
+  `).join('');
+}
+async function askBrain() {
+  const q = document.getElementById('brain-ask-input').value.trim();
+  if (!q) return;
+  const ansDiv = document.getElementById('brain-answer');
+  ansDiv.style.display = 'block';
+  ansDiv.textContent = '🧠 Thinking...';
+  if (!brainData.length) {
+    ansDiv.textContent = "Mary's Brain is empty. Ask Mary to add her preferences first!";
+    return;
+  }
+  const brainContext = brainData.map(e => `[${e.cat.toUpperCase()}] ${e.key}: ${e.val}`).join('\n');
+  const sys = `You are Mary's AI assistant. Mary has stored her personal preferences, instructions, and business rules in her "Brain". Below is everything stored in Mary's Brain:\n\n${brainContext}\n\nWhen the VA asks a question, answer it based ONLY on what Mary has stored. Be specific and quote Mary's exact preferences where possible. If the answer isn't in Mary's Brain, say "Mary hasn't added this to her Brain yet. Please ask Mary directly." Keep responses clear and direct.`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: sys, messages: [{ role: 'user', content: q }] })
+    });
+    const data = await res.json();
+    ansDiv.textContent = data.content?.[0]?.text || 'Sorry, something went wrong.';
+  } catch(e) {
+    ansDiv.textContent = 'Connection error. Please check your internet connection.';
+  }
+}
+
+/* ========== VOICE PANEL ========== */
+function renderVoicePanel() {
+  // Email templates — only show if we have them
+  const hasTemplates = EMAIL_TEMPLATES.length > 0;
+  const tplSection = document.getElementById('voice-templates-section');
+  if (tplSection) tplSection.style.display = hasTemplates ? 'block' : 'none';
+  if (hasTemplates) {
+    const et = document.getElementById('email-templates');
+    if (et) et.innerHTML = EMAIL_TEMPLATES.map((t,i) => `
+      <div class="email-example">
+        <span class="email-label">${t.label}</span>
+        <div class="email-to">To: ${t.to}</div>
+        <div class="email-subj">Subject: ${t.subject}</div>
+        <div class="email-body" id="et-body-${i}" style="white-space:pre-wrap; font-family:inherit;">${t.body}</div>
+        <button class="copy-btn" onclick="copyTemplate(${i})">📋 Copy Template</button>
+      </div>
+    `).join('');
+  }
+
+  // Check if brain data has tone rules to show
+  const toneEntries = brainData.filter(e => e.cat === 'tone');
+  const styleSection = document.getElementById('voice-style-section');
+  if (styleSection) {
+    if (toneEntries.length) {
+      styleSection.style.display = 'block';
+      const doDont = document.getElementById('voice-do-dont');
+      if (doDont) {
+        doDont.innerHTML = `
+          <div class="tone-do">
+            <div class="tone-do-label">✅ DO</div>
+            ${toneEntries.filter((_, i) => i % 2 === 0).map(e => `<div class="tone-item">${e.val}</div>`).join('')}
+          </div>
+          <div class="tone-dont">
+            <div class="tone-dont-label">❌ DON'T</div>
+            ${toneEntries.filter((_, i) => i % 2 !== 0).map(e => `<div class="tone-item">${e.val}</div>`).join('')}
+          </div>`;
+      }
+    } else {
+      styleSection.style.display = 'none';
+    }
+  }
+
+  // Quick reply phrases from brain
+  const phraseEntries = brainData.filter(e => e.cat === 'email' || e.cat === 'tone');
+  const phraseSection = document.getElementById('voice-phrases-section');
+  const rpDiv = document.getElementById('reply-phrases');
+  if (phraseSection && rpDiv) {
+    if (phraseEntries.length) {
+      phraseSection.style.display = 'block';
+      rpDiv.innerHTML = phraseEntries.map(p => `
+        <div class="tone-rule">
+          <div>
+            <div style="font-size:12px; color:var(--muted); font-weight:900; margin-bottom:4px; text-transform:uppercase;">${p.key}</div>
+            <div style="font-size:14px; font-weight:700; color:#333; line-height:1.6;">${p.val}</div>
+            <button class="copy-btn" style="margin-top:8px; padding:6px 12px; font-size:12px;" onclick="navigator.clipboard && navigator.clipboard.writeText(this.closest('.tone-rule').querySelector('div:nth-child(2)').textContent)">📋 Copy</button>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      phraseSection.style.display = 'none';
+    }
+  }
+
+  // Show empty state if nothing at all
+  const emptyState = document.getElementById('voice-empty-state');
+  if (emptyState) {
+    const hasContent = hasTemplates || toneEntries.length || phraseEntries.length;
+    emptyState.style.display = hasContent ? 'none' : 'block';
+  }
+}
+function copyTemplate(i) {
+  const text = EMAIL_TEMPLATES[i].body;
+  if (navigator.clipboard) navigator.clipboard.writeText(text);
+  const btn = document.querySelectorAll('.copy-btn')[i];
+  if (btn) { btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = '📋 Copy Template', 2000); }
+}
+
+async function generateVoiceReply() {
+  const input = document.getElementById('voice-ai-input').value.trim();
+  if (!input) return;
+  const resultDiv = document.getElementById('voice-ai-result');
+  resultDiv.style.display = 'block';
+  resultDiv.textContent = '✨ Writing in Mary\'s tone...';
+  const brainContext = brainData.length ? '\n\nAdditional preferences from Mary\'s Brain:\n' + brainData.map(e => `${e.key}: ${e.val}`).join('\n') : '';
+  const sys = `You are writing on behalf of Mary, the owner of a US-based sports netting company. Write a professional, warm, and friendly email or message reply that sounds exactly like a helpful, approachable business owner. 
+
+Mary's tone guidelines:
+- Warm and friendly, not stiff or corporate
+- Uses first names: "Hi [Name],"
+- Positive language: "Happy to help!" instead of "We cannot do..."
+- Always ends with an offer to help more
+- Professional but conversational
+- Never rude, never dismissive
+- If unsure, asks clarifying questions rather than assuming${brainContext}
+
+Write ONLY the email/message content. No explanation needed.`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Write a reply for this situation: ${input}` }] })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Error generating reply.';
+    resultDiv.style.display = 'block';
+    resultDiv.textContent = reply;
+  } catch(e) {
+    resultDiv.style.display = 'block';
+    resultDiv.textContent = 'Connection error. Please check your internet.';
+  }
+}
+
+/* ========== WORK CHECKER ========== */
+const CHECKER_CONFIGS = {
+  email: {
+    title: "📧 Check an Email / Reply",
+    fields: [
+      { id:"cc-to", label:"Who is this email to?", type:"input", placeholder:"e.g. Customer named John, or boss Mary" },
+      { id:"cc-subject", label:"Email Subject Line", type:"input", placeholder:"e.g. Your Quote — Baseball Netting" },
+      { id:"cc-body", label:"Full Email Body", type:"textarea", placeholder:"Paste the full email you wrote here..." },
+      { id:"cc-context", label:"What is the situation? (optional)", type:"input", placeholder:"e.g. Customer asked about pricing for 40x70 ft netting" }
+    ]
+  },
+  crm: {
+    title: "🗂️ Check a CRM Entry",
+    fields: [
+      { id:"cc-name", label:"Customer / Lead Name", type:"input", placeholder:"Full name as entered in CRM" },
+      { id:"cc-phone", label:"Phone Number Entered", type:"input", placeholder:"e.g. +1 555 123 4567" },
+      { id:"cc-email", label:"Email Address Entered", type:"input", placeholder:"e.g. john@example.com" },
+      { id:"cc-source", label:"Lead Source Selected", type:"input", placeholder:"e.g. Google, Referral, Website" },
+      { id:"cc-notes", label:"Notes Added (if any)", type:"textarea", placeholder:"Paste your CRM note here..." }
+    ]
+  },
+  followup: {
+    title: "📞 Check a Follow-Up Message",
+    fields: [
+      { id:"cc-days", label:"How many days since last contact?", type:"input", placeholder:"e.g. 3 days" },
+      { id:"cc-lastaction", label:"What was the last action taken?", type:"input", placeholder:"e.g. Sent quote email on Oct 5" },
+      { id:"cc-message", label:"Your follow-up message", type:"textarea", placeholder:"Paste your follow-up message here..." }
+    ]
+  },
+  quote: {
+    title: "💰 Check a Quote Email",
+    fields: [
+      { id:"cc-product", label:"Product / Item Quoted", type:"input", placeholder:"e.g. Baseball Netting 40x70 ft" },
+      { id:"cc-price", label:"Price You Used", type:"input", placeholder:"e.g. $1,200" },
+      { id:"cc-source-price", label:"Where did you get this price?", type:"input", placeholder:"e.g. Mary's pricing sheet, or Mary told me" },
+      { id:"cc-quote-body", label:"Full Quote Email", type:"textarea", placeholder:"Paste the full quote email here..." }
+    ]
+  },
+  note: {
+    title: "📝 Check a CRM Note / Log Entry",
+    fields: [
+      { id:"cc-note-lead", label:"Lead / Customer Name", type:"input", placeholder:"Who is this note about?" },
+      { id:"cc-note-action", label:"What action did you take?", type:"input", placeholder:"e.g. Sent follow-up email, called customer" },
+      { id:"cc-note-text", label:"Your CRM Note Text", type:"textarea", placeholder:"Paste the note you wrote in CRM..." }
+    ]
+  },
+  boss: {
+    title: "👔 Check a Message to Mary / Boss",
+    fields: [
+      { id:"cc-boss-context", label:"What is this message about?", type:"input", placeholder:"e.g. Daily report, question about a task, update" },
+      { id:"cc-boss-msg", label:"Your Full Message", type:"textarea", placeholder:"Paste the message you want to send to Mary..." }
+    ]
+  }
+};
+
+function renderCheckerState() {
+  // Show checker empty state if no real tasks/rules loaded
+  const hasRealContent = (TASKS[lang] && TASKS[lang].length && TASKS[lang][0].cat !== '📤 Get Started') ||
+                         (RULES[lang] && RULES[lang].length && !RULES[lang][0].t.includes('No rules yet')) ||
+                         brainData.length > 0;
+  const emptyEl = document.getElementById('checker-empty-state');
+  const selectEl = document.getElementById('checker-task-select');
+  if (emptyEl) emptyEl.style.display = hasRealContent ? 'none' : 'block';
+  if (selectEl) selectEl.style.display = hasRealContent ? 'block' : 'none';
+  if (hasRealContent) {
+    const typeBtns = document.getElementById('checker-type-btns');
+    if (typeBtns) typeBtns.innerHTML = Object.entries(CHECKER_CONFIGS).map(([key, cfg]) => {
+      const icon = cfg.title.split(' ')[0];
+      const label = cfg.title.replace(/^[^\s]+\s/, '');
+      return `<button class="checker-task-btn" onclick="openChecker('${key}')"><span class="checker-task-icon">${icon}</span> ${label}</button>`;
+    }).join('');
+  }
+}
+
+function openChecker(type) {
+  checkerType = type;
+  const cfg = CHECKER_CONFIGS[type];
+  const formArea = document.getElementById('checker-form-area');
+  document.getElementById('checker-task-select').style.display = 'none';
+  document.getElementById('check-result').className = 'check-result';
+  formArea.style.display = 'block';
+  formArea.innerHTML = `
+    <button class="checker-back" onclick="backToCheckerSelect()">← Back</button>
+    <div class="checker-form">
+      <div class="checker-form-title">${cfg.title}</div>
+      ${cfg.fields.map(f => `
+        <div class="check-field">
+          <label class="check-label">${f.label}</label>
+          ${f.type === 'textarea' 
+            ? `<textarea id="${f.id}" class="check-textarea" placeholder="${f.placeholder}"></textarea>`
+            : `<input type="text" id="${f.id}" class="check-input" placeholder="${f.placeholder}">`
+          }
+        </div>
+      `).join('')}
+      <button class="check-btn" onclick="runChecker()">🔍 Check My Work</button>
+    </div>
+  `;
+}
+function backToCheckerSelect() {
+  renderCheckerState();
+  document.getElementById('checker-form-area').style.display = 'none';
+  document.getElementById('check-result').className = 'check-result';
+  checkerType = null;
+}
+async function runChecker() {
+  const cfg = CHECKER_CONFIGS[checkerType];
+  const inputs = {};
+  cfg.fields.forEach(f => { inputs[f.label] = (document.getElementById(f.id)||{}).value || ''; });
+  const hasContent = Object.values(inputs).some(v => v.trim().length > 0);
+  if (!hasContent) { alert('Please fill in at least one field before checking.'); return; }
+
+  const resultDiv = document.getElementById('check-result');
+  resultDiv.className = 'check-result show';
+  resultDiv.innerHTML = '<div style="text-align:center; padding:20px; font-size:16px; color:var(--muted);">🔍 AI is reviewing your work...</div>';
+  document.querySelector('.scroll').scrollTop = 9999;
+
+  const inputSummary = Object.entries(inputs).map(([k,v]) => v ? `${k}:\n${v}` : '').filter(Boolean).join('\n\n');
+  const brainContext = brainData.length ? '\nMary\'s stored preferences:\n' + brainData.map(e => `${e.key}: ${e.val}`).join('\n') : '';
+  const checkType = cfg.title;
+
+  const sys = `You are a strict but encouraging VA work quality checker for a US-based sports netting company. Your job is to review the VA's work and provide clear, actionable feedback.
+
+Review the submitted work for:
+1. Missing required information
+2. Errors or mistakes (wrong names, placeholders not filled, unprofessional tone, pricing not verified)
+3. CRM best practices not followed
+4. Things that could cause problems for the business
+5. Positive things done correctly
+
+${brainContext}
+
+Respond in this exact JSON format only, no other text:
+{
+  "score": "good" | "warning" | "error",
+  "summary": "One sentence summary of the overall quality",
+  "flags": [
+    { "type": "error" | "warning" | "ok", "icon": "🚨" | "⚠️" | "✅", "text": "specific feedback" }
+  ]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: sys, messages: [{ role: 'user', content: `Work type: ${checkType}\n\nSubmitted work:\n${inputSummary}` }] })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    let parsed;
+    try { parsed = JSON.parse(text.replace(/```json|```/g,'').trim()); } catch(e) { parsed = null; }
+    if (parsed) {
+      const scoreColor = { good: 'var(--green)', warning: 'var(--yellow)', error: 'var(--red)' }[parsed.score] || 'var(--muted)';
+      const scoreEmoji = { good: '✅', warning: '⚠️', error: '🚨' }[parsed.score] || '📋';
+      resultDiv.innerHTML = `
+        <div class="check-result-title" style="color:${scoreColor}">${scoreEmoji} ${parsed.summary}</div>
+        ${parsed.flags.map(f => `
+          <div class="flag-item ${f.type}">
+            <div class="flag-icon">${f.icon}</div>
+            <div class="flag-text">${f.text}</div>
+          </div>
+        `).join('')}
+        <button onclick="backToCheckerSelect()" style="width:100%; margin-top:14px; padding:14px; border-radius:14px; border:none; background:var(--teal); color:white; font-family:'Nunito',sans-serif; font-size:15px; font-weight:900; cursor:pointer;">Check Another Piece of Work</button>
+      `;
+    } else {
+      resultDiv.innerHTML = `<div style="font-size:14px; line-height:1.7; padding:4px 0;">${text}</div><button onclick="backToCheckerSelect()" style="width:100%; margin-top:14px; padding:14px; border-radius:14px; border:none; background:var(--teal); color:white; font-family:'Nunito',sans-serif; font-size:15px; font-weight:900; cursor:pointer;">Check Another</button>`;
+    }
+  } catch(e) {
+    resultDiv.innerHTML = '<div style="color:var(--red); font-size:14px; padding:10px;">Connection error. Please check your internet and try again.</div>';
+  }
+}
+
+/* ========== AI CHAT ========== */
+async function sendChat() {
+  const inp = document.getElementById('chat-in');
+  const msg = inp.value.trim(); if (!msg) return;
+  inp.value = '';
+  addBubble(msg, 'user');
+  const typEl = addBubble('...', 'typing');
+
+  // Build rich context from Mary's Brain + generated Tasks + Rules
+  const brainCtx = brainData.length
+    ? '\n\n=== MARY\'S PERSONAL PREFERENCES (HIGHEST PRIORITY) ===\n' + brainData.map(e => '[' + e.cat.toUpperCase() + '] ' + e.key + ': ' + e.val).join('\n')
+    : '';
+  const hasRealTasks = TASKS[lang] && TASKS[lang].length && TASKS[lang][0].cat !== '📤 Get Started';
+  const tasksCtx = hasRealTasks
+    ? '\n\n=== TASK GUIDES (from Mary\'s uploaded training file) ===\n' + TASKS[lang].map(t =>
+        'Task: ' + t.name + '\nSteps: ' + t.steps.map(s => s.n + '. ' + s.h + ' — ' + s.b).join(' | ')
+      ).join('\n\n')
+    : '';
+  const hasRealRules = RULES[lang] && RULES[lang].length && !RULES[lang][0].t.includes('No rules yet');
+  const rulesCtx = hasRealRules
+    ? '\n\n=== RULES & REMINDERS (from Mary\'s uploaded training file) ===\n' + RULES[lang].map(r => '• ' + r.t).join('\n')
+    : '';
+
+  const hasMaryContent = brainData.length || hasRealTasks || hasRealRules;
+
+  const sys = hasMaryContent
+    ? 'You are the AI trainer for a VA working for Mary. Your answers must come FIRST from Mary\'s content below — her preferences, task guides, and rules. Do not give generic advice that contradicts Mary\'s instructions.\n\nWhen answering:\n- Check Mary\'s preferences first and follow them exactly.\n- Use the task guides to give accurate step-by-step help.\n- Apply Mary\'s rules when relevant.\n- If the answer is not found in Mary\'s content, say: "Mary hasn\'t added guidance on this yet — when in doubt, ask Mary directly."\n- Be warm, clear, concise. Max 4 steps when giving instructions.' + brainCtx + tasksCtx + rulesCtx
+    : 'You are a patient and encouraging trainer for a new VA working for Mary, owner of a US-based sports netting company. Be warm, simple, and clear. Max 4 steps. The VA uses Method CRM, Pipedrive, Gmail, Google Drive. Key rules: reply to leads within 24 hours, always update CRM after every action, escalate complaints to Mary immediately, never guess. Remind the VA that they can upload a training file in the Brain tab to personalize these answers to Mary\'s specific rules.';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{ role: 'user', content: msg }] })
+    });
+    const data = await res.json();
+    typEl.remove();
+    const reply = data.content?.[0]?.text || 'Sorry, something went wrong. Please try again.';
+    addBubble(reply, 'ai');
+    if (audio) speak(reply);
+  } catch(e) {
+    typEl.remove();
+    addBubble('Connection error. Please check internet and try again.', 'ai');
+    document.getElementById('api-note').style.display = 'block';
+  }
+}
+function addBubble(text, cls) {
+  const box = document.getElementById('chat-box');
+  const div = document.createElement('div');
+  div.className = 'bubble ' + cls;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+/* ========== TASKS UI ========== */
+function renderTasks() {
+  const tasks = TASKS[lang];
+  let html = '', lastCat = '';
+  tasks.forEach((tk, i) => {
+    if (tk.cat !== lastCat) { html += `<div class="task-cat-label">${tk.cat}</div>`; lastCat = tk.cat; }
+    html += `<div class="task-item" style="flex-wrap:wrap;" onclick="startTask(${i})">
+      <div class="task-icon">${tk.icon}</div>
+      <div class="task-info" style="flex:1;">
+        <div class="task-name">${tk.name}</div>
+        <div class="task-sub">${tk.sub}</div>
+        <button class="task-atd-btn" onclick="event.stopPropagation(); openAtdModal(${i})">📅 Add to Day</button>
+      </div>
+      <div class="task-go">›</div>
+    </div>`;
+  });
+  document.getElementById('task-list').innerHTML = html;
+}
+function startTask(i) {
+  curTask = i; curStep = 0;
+  document.getElementById('task-list-view').style.display = 'none';
+  document.getElementById('step-view').style.display = 'block';
+  renderStep();
+  document.querySelector('.scroll').scrollTop = 0;
+}
+function showTaskList() {
+  curTask = null;
+  document.getElementById('task-list-view').style.display = 'block';
+  document.getElementById('step-view').style.display = 'none';
+}
+function backToTasks() { showTaskList(); }
+function renderStep() {
+  const task = TASKS[lang][curTask];
+  const step = task.steps[curStep];
+  const tot = task.steps.length;
+  const pct = ((curStep + 1) / tot * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('step-meta').textContent = `Step ${curStep+1} of ${tot} — ${task.name}`;
+  document.getElementById('step-num').textContent = step.n;
+  document.getElementById('step-head').textContent = step.h;
+  document.getElementById('step-body').textContent = step.b;
+  document.getElementById('step-tip').textContent = step.tip;
+  
+  // Video: AI-powered tutorial search per step
+  const vidDiv = document.getElementById('step-video');
+  if (step.vid) {
+    vidDiv.style.display = 'block';
+    vidDiv.innerHTML = `<div class="video-placeholder"><iframe src="${step.vid}" allowfullscreen></iframe></div><div class="video-label">🎬 Watch: ${step.h}</div>`;
+  } else {
+    vidDiv.style.display = 'block';
+    vidDiv.innerHTML = '<div class="video-searching"><span class="video-searching-spinner">🔍</span>Finding a tutorial video for this step...</div>';
+    findVideoForStep(step, vidDiv, task);
+  }
+
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  prevBtn.style.display = curStep === 0 ? 'none' : 'block';
+  nextBtn.textContent = (curStep === tot - 1) ? '✅ Done' : 'Next →';
+  renderStepPdfLinks();
+  if (audio) speakStep();
+}
+function nextStep() {
+  const tot = TASKS[lang][curTask].steps.length;
+  if (curStep < tot - 1) { curStep++; renderStep(); } else { showTaskList(); }
+  document.querySelector('.scroll').scrollTop = 0;
+}
+function prevStep() {
+  if (curStep > 0) { curStep--; renderStep(); }
+  document.querySelector('.scroll').scrollTop = 0;
+}
+function speakStep() {
+  if (!audio || curTask === null) return;
+  const step = TASKS[lang][curTask].steps[curStep];
+  speak(step.h + '. ' + step.b);
+}
+
+/* ========== VIDEO SEARCH ========== */
+const videoCache = {}; // cache by step heading to avoid repeat API calls
+
+async function findVideoForStep(step, vidDiv, task) {
+  const cacheKey = step.h;
+  if (videoCache[cacheKey]) {
+    renderVideoResult(videoCache[cacheKey], step, vidDiv);
+    return;
+  }
+
+  const taskName = task ? task.name : '';
+  const searchHint = `${taskName} - ${step.h}: ${step.b.substring(0, 120)}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        system: `You are a YouTube video finder. Given a training step description, return ONLY a JSON object with a relevant YouTube tutorial video ID that would help a virtual assistant learn this task visually. 
+
+Format: {"videoId": "YOUTUBE_VIDEO_ID", "title": "Video title", "relevant": true}
+
+If no good match exists, return: {"relevant": false}
+
+Rules:
+- Only return real, well-known YouTube tutorial video IDs
+- Prefer short how-to videos (under 10 minutes)
+- Focus on practical software tutorials (Gmail, CRM, Google Drive, scheduling, email writing, etc.)
+- ONLY return the JSON object, nothing else`,
+        messages: [{ role: 'user', content: `Find a YouTube tutorial for this VA training step: "${searchHint}"` }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '{"relevant":false}';
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { parsed = { relevant: false }; }
+
+    videoCache[cacheKey] = parsed;
+    renderVideoResult(parsed, step, vidDiv);
+  } catch(e) {
+    vidDiv.style.display = 'none';
+  }
+}
+
+function renderVideoResult(parsed, step, vidDiv) {
+  if (parsed.relevant && parsed.videoId) {
+    const embedUrl = `https://www.youtube.com/embed/${parsed.videoId}?rel=0&modestbranding=1`;
+    vidDiv.style.display = 'block';
+    vidDiv.innerHTML = `
+      <div class="video-placeholder">
+        <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      </div>
+      <div class="video-label">🎬 Tutorial: ${parsed.title || step.h}</div>`;
+  } else {
+    vidDiv.style.display = 'none';
+  }
+}
+
+/* ========== REMINDERS (Check This Everyday) ========== */
+let reminders = [];
+let reminderCheckState = {}; // {id: true/false} reset daily
+
+function loadReminders() {
+  try { reminders = JSON.parse(localStorage.getItem('vaReminders') || '[]'); } catch(e) { reminders = []; }
+  const today = new Date().toDateString();
+  const saved = JSON.parse(localStorage.getItem('vaReminderChecks') || '{}');
+  reminderCheckState = saved.date === today ? (saved.checks || {}) : {};
+}
+function saveReminders() { localStorage.setItem('vaReminders', JSON.stringify(reminders)); }
+function saveReminderChecks() { localStorage.setItem('vaReminderChecks', JSON.stringify({ date: new Date().toDateString(), checks: reminderCheckState })); }
+
+function addReminder() {
+  const text = document.getElementById('reminder-text').value.trim();
+  const day = document.getElementById('reminder-day').value;
+  const time = document.getElementById('reminder-time').value;
+  const date = day === 'specific' ? document.getElementById('reminder-date').value : '';
+  if (!text) { alert('Please type a reminder.'); return; }
+  reminders.push({ id: Date.now(), text, day, time, date });
+  saveReminders();
+  document.getElementById('reminder-text').value = '';
+  document.getElementById('reminder-time').value = '';
+  document.getElementById('reminder-date').value = '';
+  document.getElementById('reminder-day').value = 'everyday';
+  document.getElementById('reminder-date-row').style.display = 'none';
+  renderReminders();
+}
+
+function toggleReminderCheck(id) {
+  reminderCheckState[id] = !reminderCheckState[id];
+  saveReminderChecks();
+  renderReminders();
+}
+
+function deleteReminder(id) {
+  reminders = reminders.filter(r => r.id !== id);
+  delete reminderCheckState[id];
+  saveReminders(); saveReminderChecks();
+  renderReminders();
+}
+
+function formatTime(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  return ((h % 12) || 12) + ':' + String(m).padStart(2,'0') + ' ' + ampm;
+}
+
+function renderReminders() {
+  const container = document.getElementById('reminder-list');
+  if (!container) return;
+  const today = new Date();
+  const todayKey = ['sun','mon','tue','wed','thu','fri','sat'][today.getDay()];
+  const todayDate = today.toISOString().slice(0, 10);
+  const DAY_NAMES = { everyday:'Every Day', mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday', specific:'Specific Date' };
+
+  const visible = reminders.filter(r => r.day === 'everyday' || (r.day === 'specific' ? r.date === todayDate : r.day === todayKey));
+  const future = reminders.filter(r => r.day !== 'everyday' && !(r.day === 'specific' ? r.date === todayDate : r.day === todayKey));
+
+  if (!reminders.length) {
+    container.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; font-weight:700; padding:10px 0;">No reminders yet. Add one below! 👇</div>';
+    return;
+  }
+  let html = '';
+  if (visible.length) {
+    html += `<div style="font-size:11px; font-weight:900; color:var(--green); text-transform:uppercase; letter-spacing:.8px; margin-bottom:8px;">📅 Today's Reminders</div>`;
+    visible.forEach(r => {
+      const done = !!reminderCheckState[r.id];
+      const metaParts = [];
+      if (r.day !== 'everyday') metaParts.push(r.day === 'specific' ? '📆 ' + r.date : '📅 ' + (DAY_NAMES[r.day] || r.day));
+      if (r.time) metaParts.push('⏰ ' + formatTime(r.time));
+      html += `<div class="reminder-item ${done ? 'done' : ''}">
+        <div class="reminder-check" onclick="toggleReminderCheck(${r.id})">${done ? '✓' : ''}</div>
+        <div class="reminder-info"><div class="reminder-text">${r.text}</div>${metaParts.length ? `<div class="reminder-meta">${metaParts.join(' · ')}</div>` : ''}</div>
+        <button class="reminder-del" onclick="deleteReminder(${r.id})">🗑️</button>
+      </div>`;
+    });
+  }
+  if (future.length) {
+    html += `<div style="font-size:11px; font-weight:900; color:var(--muted); text-transform:uppercase; letter-spacing:.8px; margin:10px 0 8px;">🗓️ Upcoming</div>`;
+    future.forEach(r => {
+      const metaParts = [];
+      if (r.day === 'specific') metaParts.push('📆 ' + r.date); else metaParts.push('📅 ' + (DAY_NAMES[r.day] || r.day));
+      if (r.time) metaParts.push('⏰ ' + formatTime(r.time));
+      html += `<div class="reminder-item">
+        <div class="reminder-check" onclick="toggleReminderCheck(${r.id})"></div>
+        <div class="reminder-info"><div class="reminder-text">${r.text}</div><div class="reminder-meta">${metaParts.join(' · ')}</div></div>
+        <button class="reminder-del" onclick="deleteReminder(${r.id})">🗑️</button>
+      </div>`;
+    });
+  }
+  container.innerHTML = html || '<div style="text-align:center; color:var(--muted); font-size:13px; font-weight:700; padding:10px 0;">No reminders for today.</div>';
+}
+
+function toggleEveryday() {
+  const body = document.getElementById('everyday-body');
+  const ch = document.getElementById('everyday-chevron');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  ch.style.transform = open ? 'rotate(-90deg)' : 'rotate(0deg)';
+}
+document.addEventListener('change', function(e) {
+  if (e.target.id === 'reminder-day') {
+    document.getElementById('reminder-date-row').style.display = e.target.value === 'specific' ? 'block' : 'none';
+  }
+});
+
+/* ========== PDF GUIDE LINKS ========== */
+let pdfLinks = [];
+function loadPdfLinks() { try { pdfLinks = JSON.parse(localStorage.getItem('vaPdfLinks') || '[]'); } catch(e) { pdfLinks = []; } }
+function savePdfLinks() { localStorage.setItem('vaPdfLinks', JSON.stringify(pdfLinks)); }
+
+function addPdfLink() {
+  const label = document.getElementById('pdf-link-label').value.trim();
+  const url = document.getElementById('pdf-link-url').value.trim();
+  if (!label || !url) { alert('Please enter both a label and a URL.'); return; }
+  pdfLinks.push({ id: Date.now(), label, url });
+  savePdfLinks();
+  document.getElementById('pdf-link-label').value = '';
+  document.getElementById('pdf-link-url').value = '';
+  renderPdfLinks(); renderStepPdfLinks();
+}
+
+function deletePdfLink(id) {
+  pdfLinks = pdfLinks.filter(l => l.id !== id);
+  savePdfLinks(); renderPdfLinks(); renderStepPdfLinks();
+}
+
+function renderPdfLinks() {
+  const container = document.getElementById('pdf-link-list');
+  if (!container) return;
+  if (!pdfLinks.length) { container.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; font-weight:700; padding:8px 0;">No links yet. Add one below! 👇</div>'; return; }
+  container.innerHTML = pdfLinks.map(l => `
+    <div class="pdf-link-item">
+      <span style="font-size:22px;">📄</span>
+      <a href="${l.url}" target="_blank" rel="noopener" class="pdf-link-label">${l.label}</a>
+      <span style="font-size:18px;">↗️</span>
+      <button class="pdf-link-del" onclick="deletePdfLink(${l.id})">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function renderStepPdfLinks() {
+  ['step-pdf-links', 'day-step-pdf-links'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!pdfLinks.length) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.innerHTML = `<div style="font-size:11px; font-weight:900; color:var(--blue); text-transform:uppercase; letter-spacing:.8px; margin-bottom:8px;">📎 Reference Files</div>`
+      + pdfLinks.map(l => `<a href="${l.url}" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:10px; background:var(--blue-light); border-radius:12px; padding:10px 14px; margin-bottom:8px; text-decoration:none; border:1.5px solid #BDDAFF;">
+        <span style="font-size:18px;">📄</span>
+        <span style="flex:1; font-size:13px; font-weight:800; color:var(--blue);">${l.label}</span>
+        <span style="font-size:14px; color:var(--blue);">↗️</span>
+      </a>`).join('');
+  });
+}
+
+function togglePdfLinks() {
+  const body = document.getElementById('pdf-links-body');
+  const ch = document.getElementById('pdf-links-chevron');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  ch.style.transform = open ? 'rotate(-90deg)' : 'rotate(0deg)';
+}
+
+/* ========== RULES ========== */
+function renderRules() {
+  const rules = RULES[lang];
+  let html = '', lastCat = '';
+  rules.forEach((r, i) => {
+    if (r.cat !== lastCat) { html += `<div class="cat-label">${r.cat}</div>`; lastCat = r.cat; }
+    html += `<div class="rule-card ${r.cl}">
+      <div class="rule-icon">${r.icon}</div>
+      <div class="rule-text">${r.t}</div>
+      <button class="rule-aud" onclick="speak(RULES['${lang}'][${i}].t)">🔊</button>
+    </div>`;
+  });
+  document.getElementById('rules-list').innerHTML = html;
+}
+
+/* ========== QUIZ ========== */
+function initQuiz() {
+  curQ = 0; qAnswers = [];
+  document.getElementById('quiz-view').style.display = 'block';
+  document.getElementById('quiz-score').style.display = 'none';
+  renderQDots(); renderQ();
+}
+function renderQDots() {
+  const quiz = QUIZ[lang];
+  document.getElementById('qdots').innerHTML = quiz.map((_, i) =>
+    `<div class="qdot ${i===curQ?'cur':qAnswers[i]===true?'ok':qAnswers[i]===false?'ng':''}" id="qd${i}"></div>`
+  ).join('');
+}
+function renderQ() {
+  const q = QUIZ[lang][curQ];
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('qfb').className = 'qfb';
+  document.getElementById('qfb').textContent = '';
+  document.getElementById('qnext').style.display = 'none';
+  const letters = ['A','B','C','D'];
+  document.getElementById('qopts').innerHTML = q.opts.map((o, i) =>
+    `<button class="qopt" onclick="answerQ(${i})"><div class="qlet">${letters[i]}</div><span>${o}</span></button>`
+  ).join('');
+  renderQDots();
+  if (audio) speak(q.q);
+}
+function answerQ(i) {
+  const q = QUIZ[lang][curQ];
+  const ok = i === q.ans;
+  qAnswers[curQ] = ok;
+  document.querySelectorAll('.qopt').forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === q.ans) b.classList.add('ok');
+    else if (idx === i && !ok) b.classList.add('ng');
+  });
+  const fb = document.getElementById('qfb');
+  fb.textContent = ok ? '✅ Correct! ' + q.fb : '❌ Wrong. The answer is: ' + q.opts[q.ans] + '. ' + q.fb;
+  fb.className = 'qfb ' + (ok ? 'ok' : 'ng');
+  document.getElementById('qnext').style.display = 'block';
+  renderQDots();
+  if (audio) speak(fb.textContent);
+}
+function nextQ() {
+  curQ++;
+  if (curQ >= QUIZ[lang].length) showScore();
+  else { renderQ(); document.querySelector('.scroll').scrollTop = 0; }
+}
+function showScore() {
+  const score = qAnswers.filter(Boolean).length;
+  const tot = QUIZ[lang].length;
+  const pct = score / tot;
+  document.getElementById('quiz-view').style.display = 'none';
+  document.getElementById('quiz-score').style.display = 'block';
+  document.getElementById('sc-em').textContent = pct >= 0.8 ? '🎉' : pct >= 0.6 ? '📚' : '💪';
+  document.getElementById('sc-big').textContent = score + '/' + tot;
+  document.getElementById('sc-lbl').textContent = `You got ${score} out of ${tot} correct`;
+  document.getElementById('sc-msg').textContent = pct >= 0.8 ? 'Excellent work! You really know the rules. Mary would be proud! 🌟' : pct >= 0.6 ? 'Good job! Review the areas you missed and try again.' : 'Keep studying! Read the Rules section again, then retry.';
+  if (audio) speak(document.getElementById('sc-msg').textContent);
+}
+
+/* ========== QUICK QUESTIONS ========== */
+function renderQQ() {
+  document.getElementById('quick-qs').innerHTML = QQ[lang].map(q =>
+    `<button class="qq" onclick="sendQ('${q}')">${q}</button>`
+  ).join('');
+}
+function sendQ(q) {
+  document.getElementById('chat-in').value = q;
+  sendChat();
+}
+
+/* ========== AUDIO ========== */
+function toggleAudio() {
+  audio = !audio;
+  document.getElementById('aud-toggle').classList.toggle('off', !audio);
+  document.getElementById('aud-toggle').textContent = audio ? '🔊' : '🔇';
+  if (audio) speak('Audio enabled. Welcome to your VA Training Guide!');
+}
+function speak(text) {
+  if (!audio || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  const filVoice = voices.find(v => v.lang === 'fil-PH' || v.lang === 'tl-PH' || v.lang.startsWith('fil'));
+  if (filVoice && lang !== 'en') { u.voice = filVoice; u.lang = 'fil-PH'; }
+  else { u.lang = 'en-US'; u.rate = 0.85; }
+  u.rate = 0.88; u.pitch = 1.05;
+  window.speechSynthesis.speak(u);
+}
+
+/* ========== NAV ========== */
+function setLang(l) { lang = l; ['en','tl','ceb'].forEach(x => document.getElementById('lb-'+x).classList.toggle('on', x===l)); renderAll(); }
+function goTab(tab) {
+  ['home','tasks','rules','ask','voice','brain','checker','quiz'].forEach(t => {
+    const p = document.getElementById('p-'+t); if (p) p.classList.toggle('on', t===tab);
+    const n = document.getElementById('nb-'+t); if (n) n.classList.toggle('on', t===tab);
+  });
+  if (tab === 'tasks') showTaskList();
+  if (tab === 'quiz') initQuiz();
+  if (tab === 'voice') renderVoicePanel();
+  if (tab === 'brain') { renderBrainEntries(); renderDayScheduleEntries(); }
+  if (tab === 'rules') { renderReminders(); renderPdfLinks(); }
+  if (tab === 'checker') { renderCheckerState(); document.getElementById('checker-form-area').style.display='none'; document.getElementById('check-result').className='check-result'; }
+  document.querySelector('.scroll').scrollTop = 0;
+}
+/* ========== ADD TO DAY MODAL ========== */
+let atdTaskIdx = null;
+let atdSelectedDays = [];
+
+function openAtdModal(taskIdx) {
+  atdTaskIdx = taskIdx;
+  atdSelectedDays = [];
+  const task = TASKS[lang][taskIdx];
+  document.getElementById('atd-task-name').textContent = '📋 "' + task.name + '"';
+  // Reset all buttons
+  ['everyday','mon','tue','wed','thu','fri'].forEach(d => document.getElementById('atd-' + d).classList.remove('on'));
+  document.getElementById('atd-overlay').style.display = 'flex';
+}
+
+function closeAtdModal(e) {
+  if (e && e.target !== document.getElementById('atd-overlay')) return;
+  document.getElementById('atd-overlay').style.display = 'none';
+  atdTaskIdx = null; atdSelectedDays = [];
+}
+
+function toggleAtdDay(day) {
+  const btn = document.getElementById('atd-' + day);
+  if (day === 'everyday') {
+    // Toggle everyday — deselects specific days
+    const isOn = btn.classList.contains('on');
+    ['everyday','mon','tue','wed','thu','fri'].forEach(d => document.getElementById('atd-' + d).classList.remove('on'));
+    atdSelectedDays = [];
+    if (!isOn) { btn.classList.add('on'); atdSelectedDays = ['everyday']; }
+  } else {
+    // Deselect "everyday" if a specific day is picked
+    document.getElementById('atd-everyday').classList.remove('on');
+    atdSelectedDays = atdSelectedDays.filter(d => d !== 'everyday');
+    const isOn = btn.classList.contains('on');
+    if (isOn) {
+      btn.classList.remove('on');
+      atdSelectedDays = atdSelectedDays.filter(d => d !== day);
+    } else {
+      btn.classList.add('on');
+      atdSelectedDays.push(day);
+    }
+  }
+}
+
+function confirmAddToDay() {
+  if (!atdSelectedDays.length) { alert('Please select at least one day (or Every Day).'); return; }
+  const task = TASKS[lang][atdTaskIdx];
+  const newTask = {
+    id: Date.now(),
+    name: task.name,
+    icon: task.icon || '📋',
+    steps: task.steps.map((s, i) => ({ n: String(i+1), h: s.h, b: s.b, tip: s.tip || '', vid: null })),
+    media: []
+  };
+
+  const daysToSave = atdSelectedDays.includes('everyday')
+    ? ['mon','tue','wed','thu','fri']
+    : atdSelectedDays;
+
+  daysToSave.forEach(day => {
+    if (!daySchedule[day]) daySchedule[day] = [];
+    // Avoid duplicate (same name same day)
+    const already = daySchedule[day].some(t => t.name === newTask.name);
+    if (!already) daySchedule[day].push({ ...newTask, id: Date.now() + Math.random() });
+  });
+
+  saveDaySchedule();
+  updateDayDots();
+  if (document.getElementById('day-schedule-entries')) renderDayScheduleEntries();
+
+  document.getElementById('atd-overlay').style.display = 'none';
+  atdTaskIdx = null; atdSelectedDays = [];
+
+  // Show a nice toast
+  showToast(atdSelectedDays.includes('everyday')
+    ? '✅ Added to Every Day!'
+    : '✅ Added to ' + atdSelectedDays.map(d => d.toUpperCase()).join(', ') + '!');
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('va-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'va-toast';
+    toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1E1E1E;color:white;padding:12px 22px;border-radius:30px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity .3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.style.opacity = '0', 2200);
+}
+
+function renderAll() { renderTasks(); renderRules(); renderQQ(); if (curTask !== null) renderStep(); }
+
+/* ========== INIT ========== */
+window.addEventListener('load', () => {
+  if (window.speechSynthesis) window.speechSynthesis.getVoices();
+  loadBrain();
+  loadGeneratedContent();
+  loadDaySchedule();
+  loadReminders();
+  loadPdfLinks();
+  setLang('tl');
+  initQuiz();
+  updateDayDots();
+  renderReminders();
+  renderPdfLinks();
+  renderStepPdfLinks();
+  if (document.getElementById('day-schedule-entries')) renderDayScheduleEntries();
+  renderCheckerState();
+  renderVoicePanel();
+  initFirebase(); // Connect to Firebase (real-time sync across devices)
+});
+window.speechSynthesis && (window.speechSynthesis.onvoiceschanged = () => {});
+
+/* ========== VOICE RECORDER FOR BRAIN ========== */
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+async function toggleVoiceRecord() {
+  if (isRecording) {
+    stopVoiceRecord();
+  } else {
+    startVoiceRecord();
+  }
+}
+
+async function startVoiceRecord() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream, { mimeType: getSupportedMimeType() });
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = processVoiceRecording;
+    mediaRecorder.start(100);
+    isRecording = true;
+
+    const btn = document.getElementById('voice-rec-btn');
+    btn.classList.add('recording');
+    document.getElementById('voice-rec-icon').textContent = '⏹️';
+    document.getElementById('voice-rec-text').textContent = 'Tap to Stop';
+    document.getElementById('voice-rec-wave').classList.add('active');
+    document.getElementById('voice-rec-status').textContent = '🎙️ Recording... speak now';
+    document.getElementById('voice-rec-status').className = 'voice-rec-status';
+    document.getElementById('voice-rec-transcript').style.display = 'none';
+  } catch(e) {
+    setVoiceStatus('❌ Microphone access denied. Please allow microphone.', 'error');
+  }
+}
+
+function stopVoiceRecord() {
+  if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+  mediaRecorder.stop();
+  mediaRecorder.stream.getTracks().forEach(t => t.stop());
+  isRecording = false;
+
+  const btn = document.getElementById('voice-rec-btn');
+  btn.classList.remove('recording');
+  document.getElementById('voice-rec-icon').textContent = '🎙️';
+  document.getElementById('voice-rec-text').textContent = 'Hold to Record';
+  document.getElementById('voice-rec-wave').classList.remove('active');
+  setVoiceStatus('⏳ Processing your voice...', 'processing');
+}
+
+function getSupportedMimeType() {
+  const types = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+async function processVoiceRecording() {
+  if (!audioChunks.length) { setVoiceStatus('❌ No audio recorded. Try again.', 'error'); return; }
+
+  const mimeType = getSupportedMimeType() || 'audio/webm';
+  const audioBlob = new Blob(audioChunks, { type: mimeType });
+
+  // Convert to base64
+  const base64Audio = await new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result.split(',')[1]);
+    reader.onerror = rej;
+    reader.readAsDataURL(audioBlob);
+  });
+
+  setVoiceStatus('🧠 AI is listening to your recording...', 'processing');
+
+  try {
+    // Use Claude's audio transcription + parsing in one shot
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 600,
+        system: `You are helping Mary add knowledge to her VA training brain. 
+The user has recorded a voice note. Your job is to:
+1. Transcribe what was said
+2. Extract the key instruction or preference
+3. Suggest the best category, a short topic label, and the full detail
+
+Respond ONLY with this JSON (no markdown, no explanation):
+{
+  "transcript": "exact words spoken",
+  "cat": one of: tone|email|boss|crm|client|pricing|schedule|other,
+  "key": "short topic label (5-8 words max)",
+  "val": "clear, complete instruction for the VA (what should they know/do)"
+}`,
+        messages: [{
+          role: 'user',
+          content: [{
+            type: 'document',
+            source: { type: 'base64', media_type: mimeType, data: base64Audio }
+          }, {
+            type: 'text',
+            text: 'Please transcribe this voice note and extract the brain entry.'
+          }]
+        }]
+      })
+    });
+
+    const data = await res.json();
+
+    // Fallback: if audio document type not supported, try text-based prompt with a note
+    if (data.error) {
+      // Retry with Web Speech API fallback transcript if available
+      throw new Error(data.error.message);
+    }
+
+    const raw = data.content?.[0]?.text || '';
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { throw new Error('Could not parse AI response.'); }
+
+    // Show transcript
+    const transcriptDiv = document.getElementById('voice-rec-transcript');
+    transcriptDiv.style.display = 'block';
+    transcriptDiv.textContent = '"' + parsed.transcript + '"';
+
+    // Fill in the brain form fields
+    if (parsed.cat) document.getElementById('brain-cat').value = parsed.cat;
+    if (parsed.key) document.getElementById('brain-key').value = parsed.key;
+    if (parsed.val) document.getElementById('brain-val').value = parsed.val;
+
+    setVoiceStatus('✅ Fields filled! Review and tap Save.', 'done');
+
+  } catch(err) {
+    // Fallback: use Web Speech API for transcription if available
+    if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+      setVoiceStatus('🔄 Trying browser transcription...', 'processing');
+      tryWebSpeechFallback();
+    } else {
+      setVoiceStatus('❌ Could not process audio. Try typing instead.', 'error');
+    }
+  }
+}
+
+// Web Speech API fallback (live transcription)
+let speechRec = null;
+let speechFallbackMode = false;
+
+function tryWebSpeechFallback() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) { setVoiceStatus('❌ Speech recognition not supported.', 'error'); return; }
+  
+  // We already have the audio recorded, so just trigger a new live session as fallback
+  setVoiceStatus('🎙️ Tap record again — browser will transcribe live', 'processing');
+  speechFallbackMode = true;
+
+  const btn = document.getElementById('voice-rec-btn');
+  btn.onclick = startWebSpeechRecord;
+  document.getElementById('voice-rec-icon').textContent = '🎙️';
+  document.getElementById('voice-rec-text').textContent = 'Tap to Record';
+}
+
+function startWebSpeechRecord() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  speechRec = new SpeechRec();
+  speechRec.continuous = true;
+  speechRec.interimResults = true;
+  speechRec.lang = lang === 'tl' ? 'tl-PH' : lang === 'ceb' ? 'ceb-PH' : 'en-US';
+  
+  let fullTranscript = '';
+  speechRec.onresult = e => {
+    fullTranscript = Array.from(e.results).map(r => r[0].transcript).join(' ');
+    document.getElementById('voice-rec-transcript').style.display = 'block';
+    document.getElementById('voice-rec-transcript').textContent = '"' + fullTranscript + '"';
+  };
+  speechRec.onend = () => {
+    if (fullTranscript) parseTranscriptWithAI(fullTranscript);
+    stopWebSpeechUI();
+  };
+  speechRec.onerror = () => { setVoiceStatus('❌ Recording error. Try again.', 'error'); stopWebSpeechUI(); };
+  
+  speechRec.start();
+  isRecording = true;
+  const btn = document.getElementById('voice-rec-btn');
+  btn.onclick = stopWebSpeechRecord;
+  btn.classList.add('recording');
+  document.getElementById('voice-rec-icon').textContent = '⏹️';
+  document.getElementById('voice-rec-text').textContent = 'Tap to Stop';
+  document.getElementById('voice-rec-wave').classList.add('active');
+  setVoiceStatus('🎙️ Recording... speak now', '');
+}
+
+function stopWebSpeechRecord() {
+  if (speechRec) speechRec.stop();
+}
+function stopWebSpeechUI() {
+  isRecording = false;
+  const btn = document.getElementById('voice-rec-btn');
+  btn.classList.remove('recording');
+  btn.onclick = speechFallbackMode ? startWebSpeechRecord : toggleVoiceRecord;
+  document.getElementById('voice-rec-icon').textContent = '🎙️';
+  document.getElementById('voice-rec-text').textContent = 'Tap to Record';
+  document.getElementById('voice-rec-wave').classList.remove('active');
+}
+
+async function parseTranscriptWithAI(transcript) {
+  setVoiceStatus('🧠 AI is filling in the fields...', 'processing');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        system: `You help Mary add knowledge to her VA training brain. Given a transcript, extract the brain entry.
+Respond ONLY with JSON (no markdown):
+{
+  "cat": one of: tone|email|boss|crm|client|pricing|schedule|other,
+  "key": "short topic label (5-8 words max)",
+  "val": "clear complete instruction for the VA"
+}`,
+        messages: [{ role: 'user', content: 'Transcript: ' + transcript }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    if (parsed.cat) document.getElementById('brain-cat').value = parsed.cat;
+    if (parsed.key) document.getElementById('brain-key').value = parsed.key;
+    if (parsed.val) document.getElementById('brain-val').value = parsed.val;
+    setVoiceStatus('✅ Fields filled! Review and tap Save.', 'done');
+  } catch(e) {
+    setVoiceStatus('✅ Transcript ready — fill in the fields above.', 'done');
+  }
+}
+
+function setVoiceStatus(msg, type) {
+  const el = document.getElementById('voice-rec-status');
+  el.textContent = msg;
+  el.className = 'voice-rec-status' + (type ? ' ' + type : '');
+}
+
+
+/* ========== FILE UPLOAD & AI GENERATION ========== */
+let uploadedFile = null;
+let uploadedFileBase64 = null;
+let uploadedFileType = null; // 'pdf' | 'video' | 'audio'
+
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  uploadedFile = file;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (['pdf'].includes(ext)) uploadedFileType = 'pdf';
+  else if (['mp4','mov','avi','webm'].includes(ext)) uploadedFileType = 'video';
+  else if (['mp3','wav','m4a','ogg'].includes(ext)) uploadedFileType = 'audio';
+  else { alert('Please upload a PDF, video (MP4/MOV), or audio (MP3/WAV/M4A) file.'); input.value=''; return; }
+  
+  const icons = { pdf:'📄', video:'🎥', audio:'🎵' };
+  const sizeKB = (file.size / 1024).toFixed(1);
+  document.getElementById('upload-filename').textContent = file.name;
+  document.getElementById('upload-preview').style.display = 'flex';
+  document.getElementById('upload-preview').innerHTML = `${icons[uploadedFileType]} <strong>${file.name}</strong> &nbsp;·&nbsp; ${sizeKB} KB &nbsp;·&nbsp; <span style="color:var(--yellow)">${uploadedFileType.toUpperCase()}</span>`;
+  document.getElementById('brain-upload-btn').disabled = false;
+
+  // base64 no longer needed for PDFs (PDF.js extracts text directly)
+  // Keep for potential future audio/video use
+  if (uploadedFileType !== 'pdf') {
+    const reader = new FileReader();
+    reader.onload = e => { uploadedFileBase64 = e.target.result.split(',')[1]; };
+    reader.readAsDataURL(file);
+  }
+}
+
+function setUploadProgress(pct, msg) {
+  document.getElementById('upload-prog-fill').style.width = pct + '%';
+  document.getElementById('upload-status').textContent = msg;
+}
+
+async function processUploadedFile() {
+  if (!uploadedFile) { alert('Please select a file first.'); return; }
+
+  const btn = document.getElementById('brain-upload-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  document.getElementById('upload-progress').style.display = 'block';
+  document.getElementById('upload-result').style.display = 'none';
+
+  setUploadProgress(10, '📖 Reading your file...');
+
+  const systemPrompt = `You are an expert training content creator. Extract and generate structured training content from the provided text.
+
+Respond ONLY with valid JSON — no markdown, no explanation, no backticks:
+
+{
+  "tasks": [
+    {
+      "cat": "category name with emoji",
+      "icon": "single emoji",
+      "name": "task name (short)",
+      "sub": "brief subtitle",
+      "steps": [
+        {"n": "1", "h": "Step heading", "b": "Full step body (2-4 sentences)", "tip": "💡 Tip: helpful tip here"}
+      ]
+    }
+  ],
+  "rules": [
+    {"cat": "category with emoji", "cl": "", "icon": "emoji", "t": "The rule text"}
+  ],
+  "quiz": [
+    {"q": "Quiz question?", "opts": ["Option A","Option B","Option C","Option D"], "ans": 0, "fb": "Explanation of correct answer."}
+  ]
+}
+
+Guidelines:
+- Extract 3-8 tasks, each with 3-7 steps. Clear, numbered, beginner-friendly.
+- Extract 8-15 rules — important do's and don'ts.
+- Create 6-10 quiz questions. "ans" is the 0-based index of the correct answer.
+- Use relevant emojis (📋, 📧, 🗂️, 📅, 📊, etc.)
+- Rule "cl": "" (orange) "bl" (blue) "gr" (green) "rd" (red) "pu" (purple)
+- Keep language clear and action-oriented for virtual assistants.
+- ONLY return the JSON object.`;
+
+  try {
+    let extractedText = '';
+
+    if (uploadedFileType === 'pdf') {
+      setUploadProgress(20, '📄 Extracting text from PDF...');
+      extractedText = await extractPDFText(uploadedFile);
+      if (!extractedText || extractedText.trim().length < 50) {
+        throw new Error('Could not read text from this PDF. Make sure it\'s a text-based PDF, not a scanned image.');
+      }
+      // Trim to ~12000 chars to stay within token limits
+      if (extractedText.length > 12000) extractedText = extractedText.substring(0, 12000) + '\n\n[Document trimmed for processing...]';
+    } else {
+      extractedText = `The user uploaded a ${uploadedFileType} file named "${uploadedFile.name}". Generate practical VA training content (tasks, rules, quiz) relevant to virtual assistant work: CRM management, email handling, scheduling, reporting, customer communication, and Google Drive usage.`;
+    }
+
+    setUploadProgress(45, '🤖 AI is analyzing content...');
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: 'Here is the training document content:\n\n' + extractedText }]
+      })
+    });
+
+    setUploadProgress(75, '✍️ Building tasks, rules & quiz...');
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error?.message || 'API error ' + res.status);
+    }
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const rawText = data.content?.[0]?.text || '';
+    let parsed;
+    try {
+      const clean = rawText.replace(/```json|```/g, '').trim();
+      parsed = JSON.parse(clean);
+    } catch(e) {
+      throw new Error('AI returned unexpected format. Please try again.');
+    }
+
+    setUploadProgress(90, '🔄 Updating all tabs...');
+
+    if (parsed.tasks && parsed.tasks.length) {
+      TASKS.en = parsed.tasks.map(t => ({ ...t, steps: t.steps.map(s => ({ ...s, vid: null })) }));
+      TASKS.tl = TASKS.en; TASKS.ceb = TASKS.en;
+    }
+    if (parsed.rules && parsed.rules.length) {
+      RULES.en = parsed.rules; RULES.tl = RULES.en; RULES.ceb = RULES.en;
+    }
+    if (parsed.quiz && parsed.quiz.length) {
+      QUIZ.en = parsed.quiz; QUIZ.tl = QUIZ.en; QUIZ.ceb = QUIZ.en;
+    }
+
+    try {
+      localStorage.setItem('generatedTasks', JSON.stringify(TASKS.en));
+      localStorage.setItem('generatedRules', JSON.stringify(RULES.en));
+      localStorage.setItem('generatedQuiz', JSON.stringify(QUIZ.en));
+      localStorage.setItem('generatedFileName', uploadedFile.name);
+      // Sync to Firebase if connected
+      cloudSave('generatedTasks', TASKS.en);
+      cloudSave('generatedRules', RULES.en);
+      cloudSave('generatedQuiz', QUIZ.en);
+      cloudSave('generatedFileName', uploadedFile.name);
+    } catch(e) {}
+
+    renderAll();
+    initQuiz();
+    renderCheckerState();
+    renderVoicePanel();
+    setUploadProgress(100, '✅ All tabs updated!');
+
+    const resultDiv = document.getElementById('upload-result');
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `
+      <div class="upload-result-title">✅ Content Generated Successfully!</div>
+      <div class="upload-result-row">📋 <span>Tasks</span> <span class="upload-result-badge">${(parsed.tasks||[]).length} tasks</span></div>
+      <div class="upload-result-row">📌 <span>Rules</span> <span class="upload-result-badge">${(parsed.rules||[]).length} rules</span></div>
+      <div class="upload-result-row">🎯 <span>Quiz</span> <span class="upload-result-badge">${(parsed.quiz||[]).length} questions</span></div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:700;">Source: ${uploadedFile.name}</div>
+    `;
+
+    btn.textContent = '✅ Done! Upload Another File';
+    btn.disabled = false;
+
+  } catch(err) {
+    setUploadProgress(0, '❌ Error: ' + err.message);
+    btn.textContent = '🚀 Upload & Generate Tasks, Rules & Quiz';
+    btn.disabled = false;
+  }
+}
+
+
+/* ========== DAY SCHEDULE DATA & UI ========== */
+let daySchedule = {}; // { mon: [{name, steps, media}], tue: [...], ... }
+let dayStepsTemp = []; // temp steps while building
+let dayMediaTemp = []; // temp media {type, name, data, url}
+let selectedBrainDays = [];
+let curDayKey = null;
+let curDayTaskIdx = null;
+let curDayStep = 0;
+
+const DAY_LABELS = { mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday' };
+const DAY_EMOJIS = { mon:'📋', tue:'📊', wed:'🗂️', thu:'📞', fri:'✅' };
+
+function loadDaySchedule() {
+  try {
+    const d = localStorage.getItem('daySchedule');
+    if (d) daySchedule = JSON.parse(d);
+  } catch(e) { daySchedule = {}; }
+}
+
+function saveDaySchedule() {
+  try { localStorage.setItem('daySchedule', JSON.stringify(daySchedule)); } catch(e) {}
+}
+
+function toggleBrainDay(d) {
+  const btn = document.getElementById('bds-' + d);
+  if (selectedBrainDays.includes(d)) {
+    selectedBrainDays = selectedBrainDays.filter(x => x !== d);
+    btn.classList.remove('on');
+  } else {
+    selectedBrainDays.push(d);
+    btn.classList.add('on');
+  }
+}
+
+function addDayStep() {
+  const idx = dayStepsTemp.length;
+  dayStepsTemp.push({ h: '', b: '', tip: '' });
+  renderDayStepsEditor();
+}
+
+function renderDayStepsEditor() {
+  const container = document.getElementById('day-steps-list');
+  if (!dayStepsTemp.length) { container.innerHTML = ''; return; }
+  container.innerHTML = dayStepsTemp.map((s, i) => `
+    <div style="background:var(--bg); border-radius:12px; padding:12px; margin-bottom:8px; border:1.5px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:13px; font-weight:900; color:var(--primary);">Step ${i+1}</span>
+        <button onclick="removeDayStep(${i})" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);">✕</button>
+      </div>
+      <input type="text" class="brain-input" style="margin-bottom:6px;" placeholder="Step heading (e.g. Open Gmail)" value="${s.h}" oninput="dayStepsTemp[${i}].h=this.value">
+      <textarea class="brain-textarea" style="min-height:60px; margin-bottom:6px;" placeholder="Step instructions..." oninput="dayStepsTemp[${i}].b=this.value">${s.b}</textarea>
+      <input type="text" class="brain-input" style="margin-bottom:0;" placeholder="💡 Tip (optional)" value="${s.tip}" oninput="dayStepsTemp[${i}].tip=this.value">
+    </div>
+  `).join('');
+}
+
+function removeDayStep(i) {
+  dayStepsTemp.splice(i, 1);
+  renderDayStepsEditor();
+}
+
+function handleDayMedia(type, input) {
+  const files = Array.from(input.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      dayMediaTemp.push({ type, name: file.name, data: e.target.result });
+      renderDayMediaPreview();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function promptVideoUrl() {
+  const url = prompt('Paste a YouTube or video URL:');
+  if (url && url.trim()) {
+    dayMediaTemp.push({ type: 'video', name: 'Video: ' + url.substring(0, 40), url: url.trim() });
+    renderDayMediaPreview();
+  }
+}
+
+function renderDayMediaPreview() {
+  const container = document.getElementById('day-media-preview');
+  if (!dayMediaTemp.length) { container.innerHTML = ''; return; }
+  const icons = { photo:'📷', audio:'🎵', video:'🎬' };
+  container.innerHTML = dayMediaTemp.map((m, i) => `
+    <div class="media-preview-item">
+      <span>${icons[m.type] || '📎'}</span>
+      <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name}</span>
+      <button class="media-preview-del" onclick="removeDayMedia(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeDayMedia(i) {
+  dayMediaTemp.splice(i, 1);
+  renderDayMediaPreview();
+}
+
+function saveDayTask() {
+  const name = document.getElementById('day-task-name').value.trim();
+  if (!selectedBrainDays.length) { alert('Please select at least one day.'); return; }
+  if (!name) { alert('Please enter a task name.'); return; }
+  if (!dayStepsTemp.length) { alert('Please add at least one step.'); return; }
+
+  const task = {
+    id: Date.now(),
+    name,
+    icon: '📋',
+    steps: dayStepsTemp.map((s, i) => ({
+      n: String(i + 1),
+      h: s.h || 'Step ' + (i + 1),
+      b: s.b,
+      tip: s.tip ? '💡 ' + s.tip : '',
+      vid: null
+    })),
+    media: dayMediaTemp.slice()
+  };
+
+  selectedBrainDays.forEach(day => {
+    if (!daySchedule[day]) daySchedule[day] = [];
+    daySchedule[day].push(task);
+  });
+
+  saveDaySchedule();
+
+  // Reset form
+  selectedBrainDays = [];
+  dayStepsTemp = [];
+  dayMediaTemp = [];
+  document.getElementById('day-task-name').value = '';
+  document.getElementById('day-steps-list').innerHTML = '';
+  document.getElementById('day-media-preview').innerHTML = '';
+  ['mon','tue','wed','thu','fri'].forEach(d => document.getElementById('bds-'+d).classList.remove('on'));
+
+  renderDayScheduleEntries();
+  updateDayDots();
+
+  // Flash save button
+  const btn = document.querySelector('.brain-day-save-btn');
+  btn.textContent = '✅ Saved!'; btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = '💾 Save to Day Schedule'; btn.style.background = 'var(--primary)'; }, 2000);
+}
+
+function deleteDayTask(day, id) {
+  if (!daySchedule[day]) return;
+  daySchedule[day] = daySchedule[day].filter(t => t.id !== id);
+  saveDaySchedule();
+  renderDayScheduleEntries();
+  updateDayDots();
+}
+
+function renderDayScheduleEntries() {
+  const container = document.getElementById('day-schedule-entries');
+  const days = ['mon','tue','wed','thu','fri'];
+  let html = '';
+  days.forEach(day => {
+    const tasks = daySchedule[day] || [];
+    if (!tasks.length) return;
+    html += `<div class="task-cat-label">${DAY_LABELS[day]}</div>`;
+    tasks.forEach(t => {
+      const chips = [...new Set((t.media||[]).map(m => m.type))].map(tp => `<span class="media-chip">${{photo:'📷 Photo',audio:'🎵 Audio',video:'🎬 Video'}[tp]||tp}</span>`).join('');
+      html += `
+        <div class="day-schedule-entry">
+          <div class="day-schedule-header">
+            <div class="day-schedule-badge">
+              <span class="day-schedule-day-tag">${DAY_LABELS[day]}</span>
+            </div>
+            <button class="day-schedule-del" onclick="deleteDayTask('${day}', ${t.id})">🗑️</button>
+          </div>
+          <div class="day-schedule-task-name">${t.name}</div>
+          <div class="day-schedule-steps-count">${t.steps.length} step${t.steps.length!==1?'s':''}</div>
+          ${chips ? `<div class="day-schedule-media-chips">${chips}</div>` : ''}
+        </div>
+      `;
+    });
+  });
+  container.innerHTML = html || '<div style="text-align:center; color:var(--muted); font-size:14px; padding:16px; font-weight:700;">No day tasks yet. Add one above! 👆</div>';
+}
+
+/* ========== HOME DAY SELECTOR ========== */
+function updateDayDots() {
+  ['mon','tue','wed','thu','fri'].forEach(d => {
+    const pill = document.getElementById('day-' + d);
+    const tasks = daySchedule[d] || [];
+    if (tasks.length) pill.classList.add('has-tasks');
+    else pill.classList.remove('has-tasks');
+    document.getElementById('dot-' + d).style.background = tasks.length ? 'var(--primary)' : 'transparent';
+  });
+  // Mark today
+  const todayMap = ['sun','mon','tue','wed','thu','fri','sat'];
+  const todayKey = todayMap[new Date().getDay()];
+  ['mon','tue','wed','thu','fri'].forEach(d => {
+    const pill = document.getElementById('day-' + d);
+    if (d === todayKey) pill.classList.add('today');
+    else pill.classList.remove('today');
+  });
+}
+
+function selectDay(day) {
+  curDayKey = day;
+  // Update pill active state
+  ['mon','tue','wed','thu','fri'].forEach(d => {
+    document.getElementById('day-' + d).classList.toggle('active', d === day);
+  });
+
+  const tasks = daySchedule[day] || [];
+  document.getElementById('home-quick-links').style.display = 'none';
+  document.getElementById('day-tasks-panel').style.display = 'block';
+  document.getElementById('day-step-view').style.display = 'none';
+  document.getElementById('day-tasks-list').style.display = 'block';
+  document.getElementById('day-tasks-title').textContent = DAY_EMOJIS[day] + ' ' + DAY_LABELS[day] + ' Tasks';
+
+  renderDayTaskList(day, tasks);
+  document.querySelector('.scroll').scrollTop = 0;
+}
+
+function renderDayTaskList(day, tasks) {
+  const container = document.getElementById('day-tasks-list');
+  if (!tasks.length) {
+    container.innerHTML = `
+      <div class="day-empty">
+        <span class="day-empty-emoji">📭</span>
+        No tasks for ${DAY_LABELS[day]} yet.<br>
+        <span style="font-size:13px;">Go to <strong>🧠 Mary's Brain</strong> to add tasks for this day!</span>
+      </div>
+    `;
+    return;
+  }
+  container.innerHTML = tasks.map((t, i) => `
+    <div class="day-task-item" id="day-task-item-${i}" onclick="startDayTask(${i})">
+      <div class="day-task-icon">${t.icon || '📋'}</div>
+      <div class="day-task-info">
+        <div class="day-task-name">${t.name}</div>
+        <div class="day-task-sub">${t.steps.length} step${t.steps.length!==1?'s':''} ${(t.media||[]).length ? '· 📎 Media attached' : ''}</div>
+      </div>
+      <div class="day-task-go">›</div>
+    </div>
+  `).join('');
+}
+
+function closeDayPanel() {
+  curDayKey = null;
+  curDayTaskIdx = null;
+  ['mon','tue','wed','thu','fri'].forEach(d => document.getElementById('day-' + d).classList.remove('active'));
+  document.getElementById('day-tasks-panel').style.display = 'none';
+  document.getElementById('home-quick-links').style.display = 'block';
+  document.querySelector('.scroll').scrollTop = 0;
+}
+
+function startDayTask(i) {
+  if (!curDayKey) return;
+  curDayTaskIdx = i;
+  curDayStep = 0;
+  document.getElementById('day-tasks-list').style.display = 'none';
+  document.getElementById('day-step-view').style.display = 'block';
+  renderDayStep();
+  document.querySelector('.scroll').scrollTop = 0;
+}
+
+function backToDayTasks() {
+  curDayTaskIdx = null;
+  document.getElementById('day-step-view').style.display = 'none';
+  document.getElementById('day-tasks-list').style.display = 'block';
+  document.querySelector('.scroll').scrollTop = 0;
+}
+
+function renderDayStep() {
+  if (!curDayKey || curDayTaskIdx === null) return;
+  const task = daySchedule[curDayKey][curDayTaskIdx];
+  const step = task.steps[curDayStep];
+  const tot = task.steps.length;
+  const pct = ((curDayStep + 1) / tot * 100);
+
+  document.getElementById('day-prog').style.width = pct + '%';
+  document.getElementById('day-step-meta').textContent = `Step ${curDayStep+1} of ${tot} — ${task.name}`;
+  document.getElementById('day-step-num').textContent = step.n;
+  document.getElementById('day-step-head').textContent = step.h;
+  document.getElementById('day-step-body').textContent = step.b;
+  document.getElementById('day-step-tip').textContent = step.tip || '';
+
+  // --- MEDIA: Show all photos, audio, video from task.media ---
+  const media = task.media || [];
+
+  // Photos
+  const photos = media.filter(m => m.type === 'photo');
+  const photoDiv = document.getElementById('day-step-photo');
+  if (photos.length) {
+    photoDiv.style.display = 'block';
+    photoDiv.innerHTML = photos.map(p => `
+      <div class="step-photo-wrap"><img src="${p.data}" alt="${p.name}"></div>
+    `).join('') + `<div class="media-label">📷 ${photos.length} Photo${photos.length!==1?'s':''}</div>`;
+  } else { photoDiv.style.display = 'none'; }
+
+  // Audio
+  const audios = media.filter(m => m.type === 'audio');
+  const audioDiv = document.getElementById('day-step-audio');
+  if (audios.length) {
+    audioDiv.style.display = 'block';
+    audioDiv.innerHTML = audios.map(a => `
+      <div class="step-audio-wrap">
+        <div>
+          <div class="step-audio-label">🎵 ${a.name}</div>
+          <audio controls src="${a.data}" style="width:100%; margin-top:4px;"></audio>
+        </div>
+      </div>
+    `).join('');
+  } else { audioDiv.style.display = 'none'; }
+
+  // Video
+  const vidDiv = document.getElementById('day-step-video');
+  const videos = media.filter(m => m.type === 'video');
+  if (step.vid || videos.length) {
+    const videoSrc = step.vid || (videos[0] ? getEmbedUrl(videos[0].url) : null);
+    if (videoSrc) {
+      vidDiv.style.display = 'block';
+      vidDiv.innerHTML = `<div class="video-placeholder"><iframe src="${videoSrc}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div><div class="video-label">🎬 ${step.h}</div>`;
+    } else { vidDiv.style.display = 'none'; }
+  } else {
+    vidDiv.style.display = 'none';
+    // Auto-find video for step
+    vidDiv.style.display = 'block';
+    vidDiv.innerHTML = '<div class="video-searching"><span class="video-searching-spinner">🔍</span>Finding a tutorial video for this step...</div>';
+    findVideoForStep(step, vidDiv, task);
+  }
+
+  const prevBtn = document.getElementById('day-prev-btn');
+  const nextBtn = document.getElementById('day-next-btn');
+  prevBtn.style.display = curDayStep === 0 ? 'none' : 'block';
+  nextBtn.textContent = (curDayStep === tot - 1) ? '✅ Done' : 'Next →';
+  if (audio) speakDayStep();
+}
+
+function getEmbedUrl(url) {
+  if (!url) return null;
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1`;
+  return url;
+}
+
+function dayNextStep() {
+  if (!curDayKey || curDayTaskIdx === null) return;
+  const tot = daySchedule[curDayKey][curDayTaskIdx].steps.length;
+  if (curDayStep < tot - 1) { curDayStep++; renderDayStep(); }
+  else {
+    // Mark task done and go back
+    const item = document.getElementById('day-task-item-' + curDayTaskIdx);
+    if (item) item.classList.add('done');
+    backToDayTasks();
+  }
+  document.querySelector('.scroll').scrollTop = 0;
+}
+
+function dayPrevStep() {
+  if (curDayStep > 0) { curDayStep--; renderDayStep(); }
+  document.querySelector('.scroll').scrollTop = 0;
+}
+
+function speakDayStep() {
+  if (!audio || !curDayKey || curDayTaskIdx === null) return;
+  const task = daySchedule[curDayKey][curDayTaskIdx];
+  const step = task.steps[curDayStep];
+  speak(step.h + '. ' + step.b);
+}
+
+
+async function extractPDFText(file) {
+  // Configure PDF.js worker
+  if (typeof pdfjsLib === 'undefined') throw new Error('PDF library not loaded. Please refresh and try again.');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = '';
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items.map(item => item.str).join(' ');
+    fullText += pageText + '\n\n';
+    setUploadProgress(20 + Math.round((i / pdf.numPages) * 20), `📄 Reading page ${i} of ${pdf.numPages}...`);
+  }
+
+  return fullText.trim();
+}
+
+/* ========== FIREBASE SYNC ========== */
+// 🔧 SETUP: Replace these values with YOUR Firebase project config
+// Get them free at: https://console.firebase.google.com
+const FIREBASE_CONFIG = {
+  apiKey: "REPLACE_WITH_YOUR_API_KEY",
+  authDomain: "REPLACE_WITH_YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://REPLACE_WITH_YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
+  storageBucket: "REPLACE_WITH_YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
+  appId: "REPLACE_WITH_YOUR_APP_ID"
+};
+
+let db = null;
+let firebaseReady = false;
+let syncStatusEl = null;
+
+function initFirebase() {
+  try {
+    if (FIREBASE_CONFIG.apiKey === 'REPLACE_WITH_YOUR_API_KEY') {
+      console.warn('Firebase not configured. Using localStorage only.');
+      showSyncStatus('offline');
+      return;
+    }
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    firebaseReady = true;
+    showSyncStatus('online');
+    listenToFirebase();
+    console.log('✅ Firebase connected!');
+  } catch(e) {
+    console.warn('Firebase init failed, using localStorage:', e);
+    showSyncStatus('offline');
+  }
+}
+
+function showSyncStatus(state) {
+  if (!syncStatusEl) {
+    syncStatusEl = document.createElement('div');
+    syncStatusEl.id = 'sync-status';
+    syncStatusEl.style.cssText = `
+      position:fixed; top:0; right:0; z-index:999;
+      font-size:10px; font-weight:900; font-family:'Nunito',sans-serif;
+      padding:3px 8px; border-radius:0 0 0 10px; letter-spacing:.4px;
+      transition: background .4s;
+    `;
+    document.body.appendChild(syncStatusEl);
+  }
+  if (state === 'online') {
+    syncStatusEl.textContent = '☁️ SYNCED';
+    syncStatusEl.style.background = '#22B573';
+    syncStatusEl.style.color = 'white';
+  } else if (state === 'saving') {
+    syncStatusEl.textContent = '⏳ SAVING…';
+    syncStatusEl.style.background = '#F0A500';
+    syncStatusEl.style.color = 'white';
+  } else {
+    syncStatusEl.textContent = '📱 LOCAL';
+    syncStatusEl.style.background = '#E0E0E0';
+    syncStatusEl.style.color = '#666';
+  }
+}
+
+/* Save any data key to Firebase (falls back to localStorage) */
+async function cloudSave(key, value) {
+  // Always save to localStorage as backup
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+
+  if (!firebaseReady || !db) return;
+  showSyncStatus('saving');
+  try {
+    await db.ref('maryVA/' + key).set(value);
+    showSyncStatus('online');
+  } catch(e) {
+    console.warn('Firebase save failed:', e);
+    showSyncStatus('offline');
+  }
+}
+
+/* Listen to Firebase for real-time updates from other devices */
+function listenToFirebase() {
+  if (!db) return;
+  db.ref('maryVA').on('value', (snap) => {
+    const data = snap.val();
+    if (!data) return;
+
+    let changed = false;
+
+    if (data.maryBrain) {
+      brainData = data.maryBrain;
+      try { localStorage.setItem('maryBrain', JSON.stringify(brainData)); } catch(e) {}
+      renderBrainEntries();
+      changed = true;
+    }
+    if (data.daySchedule) {
+      daySchedule = data.daySchedule;
+      try { localStorage.setItem('daySchedule', JSON.stringify(daySchedule)); } catch(e) {}
+      updateDayDots();
+      if (document.getElementById('day-schedule-entries')) renderDayScheduleEntries();
+      changed = true;
+    }
+    if (data.generatedTasks) {
+      TASKS.en = data.generatedTasks; TASKS.tl = TASKS.en; TASKS.ceb = TASKS.en;
+      try { localStorage.setItem('generatedTasks', JSON.stringify(TASKS.en)); } catch(e) {}
+      changed = true;
+    }
+    if (data.generatedRules) {
+      RULES.en = data.generatedRules; RULES.tl = RULES.en; RULES.ceb = RULES.en;
+      try { localStorage.setItem('generatedRules', JSON.stringify(RULES.en)); } catch(e) {}
+      changed = true;
+    }
+    if (data.generatedQuiz) {
+      QUIZ.en = data.generatedQuiz; QUIZ.tl = QUIZ.en; QUIZ.ceb = QUIZ.en;
+      try { localStorage.setItem('generatedQuiz', JSON.stringify(QUIZ.en)); } catch(e) {}
+      changed = true;
+    }
+    if (data.generatedFileName && document.getElementById('upload-preview')) {
+      document.getElementById('upload-preview').style.display = 'flex';
+      document.getElementById('upload-preview').innerHTML = `✅ <strong>Last uploaded:</strong> &nbsp;${data.generatedFileName} &nbsp;·&nbsp; <span style="color:var(--yellow)">☁️ Synced from cloud</span>`;
+    }
+
+    if (changed) { renderAll(); initQuiz(); renderCheckerState(); renderVoicePanel(); }
+    showSyncStatus('online');
+  }, (err) => {
+    console.warn('Firebase listen error:', err);
+    showSyncStatus('offline');
+  });
+}
+
+/* ========== UPDATED STORAGE FUNCTIONS (use cloudSave) ========== */
+function saveBrainToStorage() {
+  cloudSave('maryBrain', brainData);
+}
+function saveDaySchedule() {
+  cloudSave('daySchedule', daySchedule);
+}
+
+/* Load generated content from localStorage on startup */
+function loadGeneratedContent() {
+  try {
+    const tasks = localStorage.getItem('generatedTasks');
+    const rules = localStorage.getItem('generatedRules');
+    const quiz  = localStorage.getItem('generatedQuiz');
+    const fname = localStorage.getItem('generatedFileName');
+    if (tasks) { TASKS.en = JSON.parse(tasks); TASKS.tl = TASKS.en; TASKS.ceb = TASKS.en; }
+    if (rules) { RULES.en = JSON.parse(rules); RULES.tl = RULES.en; RULES.ceb = RULES.en; }
+    if (quiz)  { QUIZ.en  = JSON.parse(quiz);  QUIZ.tl  = QUIZ.en;  QUIZ.ceb  = QUIZ.en; }
+    if (fname && document.getElementById('upload-preview')) {
+      document.getElementById('upload-preview').style.display = 'flex';
+      document.getElementById('upload-preview').innerHTML = `✅ <strong>Last uploaded:</strong> &nbsp;${fname} &nbsp;·&nbsp; <span style="color:var(--yellow)">Content loaded</span>`;
+    }
+  } catch(e) {}
+}
+
+/* Also cloud-save generated tasks/rules/quiz after AI upload */
+const _origProcessUpload = typeof processUploadedFile !== 'undefined' ? processUploadedFile : null;
+
+</script>
+</body>
+</html>
