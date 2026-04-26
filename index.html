@@ -3,44 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VA Training Guide | Mary's Team v2.2</title>
+<title>VA Training Guide | Mary's Team v2</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Modern Slate palette */
-  --primary: #3F5A6C;
-  --primary-light: #E5EBF0;
-  --primary-dark: #2A3F50;
-  --primary-rgb: 63, 90, 108;
-  /* Category accents — desaturated to coordinate with slate */
-  --green: #5C8A6E;
-  --green-light: #E2EDE6;
-  --blue: #4A6B82;
-  --blue-light: #E1E8EE;
-  --purple: #7A6B8E;
-  --purple-light: #E8E3EE;
-  --yellow: #B5904A;
-  --yellow-light: #F0E8D4;
-  --red: #B5544A;
-  --red-light: #F0DCD9;
-  --teal: #4F8A8C;
-  --teal-light: #E0EBEB;
-  --bg: #F7F8FA;
+  --primary: #1A2F5A;
+  --primary-light: #EDF2FA;
+  --primary-dark: #0F1E3C;
+  --green: #0B6E4F;
+  --green-light: #DFF2EC;
+  --blue: #1B72BE;
+  --blue-light: #E5F1FB;
+  --purple: #4A2E9A;
+  --purple-light: #EAE5F7;
+  --yellow: #B87D0A;
+  --yellow-light: #FBF1DC;
+  --red: #B52B20;
+  --red-light: #FAEAE8;
+  --teal: #0B7285;
+  --teal-light: #DFF4F7;
+  --bg: #F2F5F9;
   --card: #FFFFFF;
-  --text: #1A1F2E;
+  --text: #111827;
   --muted: #6B7280;
-  --border: #E2E5EA;
+  --border: #CBD5E7;
   --radius: 10px;
   --nav-h: 70px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; overflow: hidden; }
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--bg);
   color: var(--text);
   display: flex;
@@ -53,7 +50,7 @@ body {
   background: var(--primary);
   padding: 14px 18px 10px;
   flex-shrink: 0;
-  box-shadow: 0 3px 16px rgba(63,90,108,0.3);
+  box-shadow: 0 3px 16px rgba(0,0,0,0.18);
   z-index: 50;
 }
 .hdr-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -69,7 +66,7 @@ body {
 .lang-bar { display: flex; gap: 4px; background: rgba(0,0,0,0.15); border-radius: 30px; padding: 3px; }
 .lbtn {
   flex: 1; background: transparent; border: none;
-  color: rgba(255,255,255,0.65); font-family: 'Nunito',sans-serif;
+  color: rgba(255,255,255,0.65); font-family: 'Inter', sans-serif;
   font-size: 12px; font-weight: 800; padding: 5px 10px;
   border-radius: 24px; cursor: pointer; transition: all .2s; white-space: nowrap;
 }
@@ -78,7 +75,7 @@ body {
 .bnav {
   position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
   width: 100%; max-width: 500px;
-  background: white; border-top: 1.5px solid var(--border);
+  background: white; border-top: 1.5px solid #D5DEEC;
   display: flex; z-index: 50;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.07);
   height: var(--nav-h);
@@ -87,7 +84,7 @@ body {
   flex: 1; background: none; border: none; cursor: pointer;
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 3px; color: #C0C0C0;
-  font-family: 'Nunito',sans-serif; transition: all .2s; padding: 6px 2px;
+  font-family: 'Inter', sans-serif; transition: all .2s; padding: 6px 2px;
 }
 .nbtn .ni { font-size: 22px; transition: transform .2s; }
 .nbtn .nl { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; }
@@ -97,13 +94,13 @@ body {
 .panel.on { display: block; }
 .card {
   background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 14px;
-  box-shadow: 0 3px 14px rgba(63,90,108,0.08); border: 1.5px solid var(--border);
+  box-shadow: 0 3px 14px rgba(26,47,90,0.06); border: 1.5px solid var(--border);
 }
 .welcome {
-  background: linear-gradient(135deg, var(--primary) 0%, #5C7E92 100%);
+  background: linear-gradient(135deg, #1A2F5A 0%, #2A4A80 100%);
   color: white; border-radius: 22px; padding: 24px 22px 20px;
   margin-bottom: 20px; position: relative; overflow: hidden;
-  border: none; box-shadow: 0 6px 24px rgba(63,90,108,0.35);
+  border: none; box-shadow: 0 6px 24px rgba(26,47,90,0.35);
 }
 .welcome::after { content:''; position:absolute; bottom:-30px; right:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.08); }
 .welcome::before { content:''; position:absolute; top:-20px; right:60px; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,0.06); }
@@ -112,7 +109,7 @@ body {
 .welcome-sub { font-size: 14px; opacity: 0.88; line-height: 1.6; }
 .bigbtn {
   display: flex; align-items: center; gap: 14px; padding: 16px 18px;
-  border-radius: 16px; border: none; font-family: 'Nunito',sans-serif;
+  border-radius: 16px; border: none; font-family: 'Inter', sans-serif;
   cursor: pointer; transition: all .2s; width: 100%; text-align: left; margin-bottom: 10px;
 }
 .bigbtn:active { transform: scale(0.97); }
@@ -121,7 +118,7 @@ body {
 .bigbtn-title { font-size: 16px; font-weight: 900; }
 .bigbtn-sub { font-size: 12px; opacity: 0.75; font-weight: 600; margin-top: 1px; }
 .bigbtn-arrow { font-size: 20px; opacity: 0.6; }
-.bb-orange { background: var(--primary); color: white; box-shadow: 0 4px 16px rgba(63,90,108,0.3); }
+.bb-orange { background: var(--primary); color: white; box-shadow: 0 4px 16px rgba(26,47,90,0.2); }
 .bb-blue   { background: var(--blue); color: white; box-shadow: 0 4px 16px rgba(46,134,222,0.3); }
 .bb-green  { background: var(--green); color: white; box-shadow: 0 4px 16px rgba(34,181,115,0.25); }
 .bb-purple { background: var(--purple); color: white; box-shadow: 0 4px 16px rgba(142,68,173,0.3); }
@@ -145,7 +142,7 @@ body {
 .task-cat-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 16px 0 8px; }
 .back-btn {
   background: none; border: none; color: var(--primary);
-  font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 800;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800;
   cursor: pointer; display: flex; align-items: center; gap: 6px;
   margin-bottom: 14px; padding: 6px 0;
 }
@@ -156,11 +153,11 @@ body {
 .step-head { font-size: 21px; font-weight: 900; margin-bottom: 14px; }
 .listen-btn {
   display: inline-flex; align-items: center; gap: 6px; background: var(--blue-light);
-  border: none; border-radius: 10px; padding: 9px 16px; font-family: 'Nunito',sans-serif;
+  border: none; border-radius: 10px; padding: 9px 16px; font-family: 'Inter', sans-serif;
   font-size: 13px; font-weight: 800; color: var(--blue); cursor: pointer; margin-bottom: 14px;
 }
 .step-body {
-  background: #F2F4F7; border-left: 5px solid var(--primary);
+  background: #F4F7FC; border-left: 5px solid var(--primary);
   border-radius: 12px; padding: 16px; font-size: 16px;
   line-height: 1.75; color: #333; margin-bottom: 14px;
 }
@@ -177,12 +174,12 @@ body {
 .step-nav { display: flex; gap: 10px; margin-top: 6px; }
 .snbtn {
   flex: 1; padding: 15px 18px; border-radius: 14px; border: none;
-  font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900;
+  font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 900;
   cursor: pointer; transition: all .2s; text-align: center;
 }
 .snbtn:active { transform: scale(0.97); }
 .sn-prev { background: var(--primary-light); color: var(--primary); }
-.sn-next { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(63,90,108,0.3); }
+.sn-next { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(26,47,90,0.2); }
 .cat-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 20px 0 8px; }
 .rule-card {
   background: white; border-radius: 14px; padding: 14px 16px;
@@ -200,12 +197,12 @@ body {
 .quick-qs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .qq {
   background: var(--primary-light); border: 1.5px solid var(--primary);
-  border-radius: 20px; padding: 6px 12px; font-family: 'Nunito',sans-serif;
+  border-radius: 20px; padding: 6px 12px; font-family: 'Inter', sans-serif;
   font-size: 12px; font-weight: 800; color: var(--primary); cursor: pointer; transition: all .2s;
 }
 .qq:active { background: var(--primary); color: white; }
 .chat-box {
-  height: 280px; overflow-y: auto; background: #F3F3F3; border-radius: 16px;
+  height: 280px; overflow-y: auto; background: #F0F3F8; border-radius: 16px;
   padding: 14px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;
 }
 .bubble { max-width: 86%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.65; }
@@ -215,12 +212,12 @@ body {
 .chat-row { display: flex; gap: 8px; }
 .chat-in {
   flex: 1; border: 2px solid var(--border); border-radius: 14px; padding: 12px 16px;
-  font-family: 'Nunito',sans-serif; font-size: 15px; outline: none; background: white; transition: border .2s;
+  font-family: 'Inter', sans-serif; font-size: 15px; outline: none; background: white; transition: border .2s;
 }
 .chat-in:focus { border-color: var(--primary); }
 .chat-go { background: var(--primary); border: none; border-radius: 14px; color: white; width: 52px; font-size: 20px; cursor: pointer; transition: background .2s; }
 .chat-go:hover { background: var(--primary-dark); }
-.api-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; background: #F2F4F7; border-radius: 10px; padding: 10px 12px; display: none; }
+.api-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; background: #F4F7FC; border-radius: 10px; padding: 10px 12px; display: none; }
 /* QUIZ */
 .qdots { display: flex; gap: 6px; margin-bottom: 18px; }
 .qdot { flex: 1; height: 8px; border-radius: 4px; background: #E0E0E0; }
@@ -237,13 +234,13 @@ body {
 .qopt:hover { border-color: var(--primary); background: var(--primary-light); }
 .qopt.ok  { border-color: var(--green); background: var(--green-light); color: #166E44; }
 .qopt.ng  { border-color: var(--red); background: var(--red-light); color: #A32B1E; }
-.qlet { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.qlet { width: 34px; height: 34px; border-radius: 50%; background: #F0E8E4; color: var(--primary); font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .qopt.ok .qlet { background: var(--green); color: white; }
 .qopt.ng .qlet { background: var(--red); color: white; }
 .qfb { border-radius: 14px; padding: 14px 16px; font-size: 14px; font-weight: 700; line-height: 1.6; margin-top: 14px; display: none; }
 .qfb.ok  { background: var(--green-light); color: #166E44; display: block; }
 .qfb.ng  { background: var(--red-light); color: #A32B1E; display: block; }
-.qnext { display: none; width: 100%; margin-top: 14px; padding: 15px; border-radius: 14px; border: none; background: var(--primary); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(63,90,108,0.3); }
+.qnext { display: none; width: 100%; margin-top: 14px; padding: 15px; border-radius: 14px; border: none; background: var(--primary); color: white; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(26,47,90,0.2); }
 /* ---- REMINDERS ---- */
 .reminder-item {
   background: white; border: 2px solid var(--green-light); border-radius: 14px;
@@ -287,7 +284,7 @@ body {
 .atd-day-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
 .atd-day-btn {
   padding: 11px 6px; border-radius: 14px; border: 2px solid var(--border);
-  background: white; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
+  background: white; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 900;
   cursor: pointer; transition: all .18s; text-align: center; color: var(--text);
 }
 .atd-day-btn:active { transform: scale(0.95); }
@@ -296,19 +293,19 @@ body {
 .atd-day-btn.everyday.on { background: var(--green); border-color: var(--green); color: white; }
 .atd-save {
   width: 100%; padding: 15px; border-radius: 14px; border: none;
-  background: var(--primary); color: white; font-family: 'Nunito',sans-serif;
+  background: var(--primary); color: white; font-family: 'Inter', sans-serif;
   font-size: 16px; font-weight: 900; cursor: pointer; margin-bottom: 10px;
-  box-shadow: 0 4px 14px rgba(63,90,108,0.3); transition: all .2s;
+  box-shadow: 0 4px 14px rgba(26,47,90,0.2); transition: all .2s;
 }
 .atd-cancel {
   width: 100%; padding: 12px; border-radius: 14px; border: 2px solid var(--border);
-  background: white; font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 800;
+  background: white; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 800;
   cursor: pointer; color: var(--muted);
 }
 /* Add to Day button on task card */
 .task-atd-btn {
   background: var(--primary-light); border: 1.5px solid var(--primary);
-  border-radius: 10px; padding: 5px 10px; font-family: 'Nunito',sans-serif;
+  border-radius: 10px; padding: 5px 10px; font-family: 'Inter', sans-serif;
   font-size: 11px; font-weight: 900; color: var(--primary); cursor: pointer;
   white-space: nowrap; margin-top: 5px; display: inline-block;
   transition: all .18s;
@@ -319,7 +316,7 @@ body {
 .score-big { font-size: 56px; font-weight: 900; color: var(--primary); line-height: 1; }
 .score-lbl { font-size: 15px; color: var(--muted); margin: 8px 0 16px; }
 .score-msg { font-size: 16px; font-weight: 700; line-height: 1.6; margin-bottom: 24px; }
-.retry { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: white; font-family: 'Nunito',sans-serif; font-size: 17px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 16px rgba(63,90,108,0.3); }
+.retry { width: 100%; padding: 16px; border-radius: 16px; border: none; background: var(--primary); color: white; font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 16px rgba(26,47,90,0.2); }
 
 /* ---- DAY STRIP ---- */
 .day-strip {
@@ -329,7 +326,7 @@ body {
   flex: 1; background: white; border: 2px solid var(--border);
   border-radius: 14px; padding: 10px 4px 8px;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
-  cursor: pointer; transition: all .2s; font-family: 'Nunito', sans-serif;
+  cursor: pointer; transition: all .2s; font-family: 'Inter', sans-serif;
 }
 .day-pill:active { transform: scale(0.95); }
 .day-pill.active { background: var(--primary); border-color: var(--primary); }
@@ -385,7 +382,7 @@ body {
 .brain-day-upload-title { font-size: 16px; font-weight: 900; margin-bottom: 6px; color: var(--primary); }
 .brain-day-upload-sub { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
 .day-select-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-.day-select-btn { flex: 1; min-width: 52px; padding: 9px 6px; border-radius: 10px; border: 2px solid var(--border); background: white; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900; color: var(--muted); cursor: pointer; transition: all .2s; text-align: center; }
+.day-select-btn { flex: 1; min-width: 52px; padding: 9px 6px; border-radius: 10px; border: 2px solid var(--border); background: white; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 900; color: var(--muted); cursor: pointer; transition: all .2s; text-align: center; }
 .day-select-btn.on { background: var(--primary); border-color: var(--primary); color: white; }
 .media-upload-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .media-upload-box { flex: 1; min-width: 100px; background: var(--bg); border: 2px dashed var(--border); border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; transition: border-color .2s; }
@@ -396,7 +393,7 @@ body {
 .media-preview-list { margin-bottom: 10px; }
 .media-preview-item { display: flex; align-items: center; gap: 8px; background: var(--green-light); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
 .media-preview-del { background: none; border: none; cursor: pointer; font-size: 16px; color: var(--muted); margin-left: auto; }
-.brain-day-save-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 4px; }
+.brain-day-save-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: white; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 4px; }
 .day-schedule-entries { margin-bottom: 14px; }
 .day-schedule-entry { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; border: 2px solid var(--border); }
 .day-schedule-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
@@ -408,7 +405,7 @@ body {
 .day-schedule-media-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .media-chip { background: var(--blue-light); color: var(--blue); border-radius: 8px; padding: 3px 9px; font-size: 11px; font-weight: 800; }
 
-.voice-intro { background: linear-gradient(135deg, #8E44AD 0%, #C56CE1 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(142,68,173,0.3); }
+.voice-intro { background: linear-gradient(135deg, #4A2E9A 0%, #6B4DC4 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(74,46,154,0.28); }
 .voice-intro h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
 .voice-intro p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
 .voice-section { margin-bottom: 18px; }
@@ -418,7 +415,7 @@ body {
 .email-to { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
 .email-subj { font-size: 14px; font-weight: 900; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 .email-body { font-size: 14px; line-height: 1.7; color: #333; }
-.copy-btn { display: flex; align-items: center; gap: 6px; background: var(--primary-light); border: 2px solid var(--primary); border-radius: 10px; padding: 8px 14px; font-family: 'Nunito',sans-serif; font-size: 13px; font-weight: 800; color: var(--primary); cursor: pointer; margin-top: 12px; }
+.copy-btn { display: flex; align-items: center; gap: 6px; background: var(--primary-light); border: 2px solid var(--primary); border-radius: 10px; padding: 8px 14px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 800; color: var(--primary); cursor: pointer; margin-top: 12px; }
 .copy-btn:active { background: var(--primary); color: white; }
 .tone-rule { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; border-left: 5px solid var(--purple); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .tone-do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
@@ -440,13 +437,13 @@ body {
 .empty-state-btn {
   display: inline-block; background: var(--primary); color: white;
   border: none; border-radius: 14px; padding: 13px 24px;
-  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900;
-  cursor: pointer; box-shadow: 0 4px 14px rgba(63,90,108,0.3); transition: all .2s;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 900;
+  cursor: pointer; box-shadow: 0 4px 14px rgba(26,47,90,0.2); transition: all .2s;
 }
 .empty-state-btn:active { transform: scale(0.97); }
 
 /* ---- BRAIN PANEL ---- */
-.brain-intro { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); color: white; border-radius: var(--radius); padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(var(--primary-rgb), 0.25); }
+.brain-intro { background: linear-gradient(135deg, #B87D0A 0%, #D4A030 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(184,125,10,0.25); }
 .brain-intro h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
 .brain-intro p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
 .brain-entry { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; border: 2px solid var(--border); }
@@ -457,35 +454,35 @@ body {
 .brain-entry-val { font-size: 13px; color: #555; line-height: 1.6; }
 .brain-add-form { background: white; border-radius: 16px; padding: 18px; border: 2px dashed var(--yellow); margin-bottom: 16px; }
 .brain-add-title { font-size: 16px; font-weight: 900; margin-bottom: 14px; }
-.brain-input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; background: var(--bg); transition: border .2s; }
-.brain-input:focus { border-color: var(--yellow); }
-.brain-textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; background: var(--bg); resize: vertical; min-height: 80px; transition: border .2s; }
-.brain-textarea:focus { border-color: var(--yellow); }
-.brain-save-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--yellow); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; }
+.brain-input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; background: var(--bg); transition: border .2s; }
+.brain-input:focus { border-color: var(--primary); }
+.brain-textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; background: var(--bg); resize: vertical; min-height: 80px; transition: border .2s; }
+.brain-textarea:focus { border-color: var(--primary); }
+.brain-save-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--yellow); color: white; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; }
 .brain-ask-section { background: var(--yellow-light); border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 2px solid var(--yellow); }
 .brain-ask-title { font-size: 14px; font-weight: 900; margin-bottom: 10px; }
 .brain-ask-row { display: flex; gap: 8px; }
-.brain-ask-in { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: white; }
-.brain-ask-in:focus { border-color: var(--yellow); }
+.brain-ask-in { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; background: white; }
+.brain-ask-in:focus { border-color: var(--primary); }
 .brain-ask-btn { background: var(--yellow); border: none; border-radius: 12px; color: white; width: 48px; font-size: 20px; cursor: pointer; }
 .brain-answer { background: white; border-radius: 12px; padding: 14px; margin-top: 10px; font-size: 14px; line-height: 1.7; border-left: 4px solid var(--yellow); display: none; }
 
 /* ---- WORK CHECKER ---- */
-.checker-intro { background: linear-gradient(135deg, #00B4D8 0%, #0077B6 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(0,119,182,0.3); }
+.checker-intro { background: linear-gradient(135deg, #0B7285 0%, #0B5C72 100%); color: white; border-radius: 22px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(11,114,133,0.28); }
 .checker-intro h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
 .checker-intro p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
-.checker-task-btn { display: block; width: 100%; padding: 14px 18px; border-radius: 14px; border: 2px solid var(--border); background: white; font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 800; color: var(--text); cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; transition: all .2s; }
+.checker-task-btn { display: block; width: 100%; padding: 14px 18px; border-radius: 14px; border: 2px solid var(--border); background: white; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800; color: var(--text); cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; transition: all .2s; }
 .checker-task-btn:hover, .checker-task-btn.sel { border-color: var(--teal); background: var(--teal-light); }
 .checker-task-icon { font-size: 26px; }
 .checker-form { background: white; border-radius: 16px; padding: 18px; border: 2px solid var(--border); margin-bottom: 14px; }
 .checker-form-title { font-size: 16px; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 .check-field { margin-bottom: 14px; }
 .check-label { font-size: 13px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: block; }
-.check-input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: var(--bg); transition: border .2s; }
+.check-input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; background: var(--bg); transition: border .2s; }
 .check-input:focus { border-color: var(--teal); }
-.check-textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: var(--bg); resize: vertical; min-height: 100px; transition: border .2s; }
+.check-textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; background: var(--bg); resize: vertical; min-height: 100px; transition: border .2s; }
 .check-textarea:focus { border-color: var(--teal); }
-.check-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--teal); color: white; font-family: 'Nunito',sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(0,180,216,0.3); }
+.check-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--teal); color: white; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(0,180,216,0.3); }
 .check-result { background: white; border-radius: 14px; padding: 16px; border: 2px solid var(--border); margin-top: 14px; display: none; }
 .check-result.show { display: block; }
 .check-result-title { font-size: 16px; font-weight: 900; margin-bottom: 12px; }
@@ -495,15 +492,15 @@ body {
 .flag-item.ok { background: var(--green-light); border-left: 4px solid var(--green); }
 .flag-icon { font-size: 20px; flex-shrink: 0; }
 .flag-text { font-size: 13px; font-weight: 700; line-height: 1.5; }
-.checker-select { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Nunito',sans-serif; font-size: 14px; outline: none; background: var(--bg); transition: border .2s; cursor: pointer; }
+.checker-select { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; background: var(--bg); transition: border .2s; cursor: pointer; }
 .checker-select:focus { border-color: var(--teal); }
-.checker-back { background: none; border: none; color: var(--teal); font-family: 'Nunito',sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 14px; padding: 4px 0; }
+.checker-back { background: none; border: none; color: var(--teal); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 14px; padding: 4px 0; }
 
 /* ---- UPLOAD SECTION IN BRAIN ---- */
 .brain-upload-section {
   background: linear-gradient(135deg, #1E1E2E 0%, #2A2A3E 100%);
   border-radius: 20px; padding: 20px; margin-bottom: 18px;
-  border: 2px solid #444; box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+  border: 2px solid #2A3A5A; box-shadow: 0 6px 24px rgba(0,0,0,0.3);
 }
 .brain-upload-title { font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px; }
 .brain-upload-sub { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 16px; }
@@ -513,13 +510,13 @@ body {
   border-radius: 14px; padding: 20px 16px; cursor: pointer; transition: all .2s;
   margin-bottom: 14px; text-align: center; color: #fff; font-weight: 800; font-size: 15px;
 }
-.brain-upload-label:hover { background: rgba(255,255,255,0.12); border-color: var(--yellow); }
+.brain-upload-label:hover { background: rgba(255,255,255,0.12); border-color: var(--primary); }
 .brain-upload-icon { font-size: 36px; }
 .brain-upload-label input[type=file] { display: none; }
 .brain-upload-preview { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .brain-upload-btn {
   width: 100%; padding: 15px; border-radius: 14px; border: none;
-  background: var(--yellow); color: white; font-family: 'Nunito',sans-serif;
+  background: var(--yellow); color: white; font-family: 'Inter', sans-serif;
   font-size: 16px; font-weight: 900; cursor: pointer; transition: all .2s;
   box-shadow: 0 4px 16px rgba(240,165,0,0.4);
 }
@@ -533,7 +530,7 @@ body {
 .upload-result-row { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
 .upload-result-badge { background: var(--green); color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 900; }
 .checker-step-hint {
-  background: linear-gradient(135deg, var(--teal-light), #e0f7ff);
+  background: linear-gradient(135deg, var(--teal-light), #daf0f5);
   border-radius: 14px; padding: 14px 16px; margin-bottom: 16px;
   display: flex; align-items: flex-start; gap: 12px;
   border-left: 5px solid var(--teal);
@@ -562,7 +559,7 @@ body {
 .voice-rec-section {
   background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
   border-radius: 16px; padding: 16px; margin-bottom: 14px;
-  border: 2px solid rgba(63,90,108,0.3);
+  border: 2px solid rgba(244,84,29,0.3);
 }
 .voice-rec-label {
   font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.75);
@@ -573,8 +570,8 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   background: var(--primary); border: none; border-radius: 50%;
   width: 72px; height: 72px; cursor: pointer; transition: all .2s;
-  box-shadow: 0 0 0 0 rgba(63,90,108,0.5); flex-shrink: 0;
-  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 0 0 0 rgba(244,84,29,0.5); flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
 }
 .voice-rec-btn.recording {
   background: #e74c3c;
@@ -675,7 +672,7 @@ body {
         <div id="day-step-video" class="step-video" style="display:none;"></div>
         <div class="step-body" id="day-step-body"></div>
         <div class="step-tip" id="day-step-tip"></div>
-        <div id="day-step-pdf-links" style="display:none; margin-bottom:14px; background:#F0F6FF; border-radius:14px; padding:12px 14px;"></div>
+        <div id="day-step-pdf-links" style="display:none; margin-bottom:14px; background:#EBF2FC; border-radius:14px; padding:12px 14px;"></div>
         <div class="step-nav">
           <button class="snbtn sn-prev" id="day-prev-btn" onclick="dayPrevStep()">← Prev</button>
           <button class="snbtn sn-next" id="day-next-btn" onclick="dayNextStep()">Next →</button>
@@ -742,7 +739,7 @@ body {
       <div id="step-video" class="step-video" style="display:none"></div>
       <div class="step-body" id="step-body"></div>
       <div class="step-tip" id="step-tip"></div>
-      <div id="step-pdf-links" style="display:none; margin-bottom:14px; background:#F0F6FF; border-radius:14px; padding:12px 14px;"></div>
+      <div id="step-pdf-links" style="display:none; margin-bottom:14px; background:#EBF2FC; border-radius:14px; padding:12px 14px;"></div>
       <div class="step-nav">
         <button class="snbtn sn-prev" id="prev-btn" onclick="prevStep()">← Prev</button>
         <button class="snbtn sn-next" id="next-btn" onclick="nextStep()">Next →</button>
@@ -792,7 +789,7 @@ body {
       <div style="font-size:15px; font-weight:900; margin-bottom:8px; color:var(--purple);">🤖 Generate a Reply in Mary's Tone</div>
       <div style="font-size:13px; color:#555; margin-bottom:10px;">Describe the situation — AI will write a reply that sounds like Mary.</div>
       <textarea id="voice-ai-input" class="brain-textarea" placeholder="Example: A customer is asking about the price of baseball netting, size 40x70 feet..."></textarea>
-      <button onclick="generateVoiceReply()" style="width:100%; padding:14px; border-radius:14px; border:none; background:var(--purple); color:white; font-family:'Nunito',sans-serif; font-size:16px; font-weight:900; cursor:pointer;">✨ Write Reply in Mary's Tone</button>
+      <button onclick="generateVoiceReply()" style="width:100%; padding:14px; border-radius:14px; border:none; background:var(--purple); color:white; font-family:'Inter',sans-serif; font-size:16px; font-weight:900; cursor:pointer;">✨ Write Reply in Mary's Tone</button>
       <div id="voice-ai-result" class="brain-answer" style="border-color:var(--purple); margin-top:10px; display:none;"></div>
     </div>
   </div>
@@ -818,7 +815,7 @@ body {
         <!-- Reminder list -->
         <div id="reminder-list"></div>
         <!-- Add reminder form -->
-        <div id="add-reminder-form" style="background:#F9F9F9; border-radius:14px; padding:14px; margin-top:10px; border:2px dashed var(--border);">
+        <div id="add-reminder-form" style="background:#F4F6FA; border-radius:14px; padding:14px; margin-top:10px; border:2px dashed var(--border);">
           <div style="font-size:13px; font-weight:900; color:var(--green); margin-bottom:10px;">➕ Add a Reminder</div>
           <input type="text" id="reminder-text" class="brain-input" placeholder="What to check / do every day (e.g. Check unread emails)" style="margin-bottom:8px;">
           <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
@@ -836,7 +833,7 @@ body {
           <div id="reminder-date-row" style="display:none; margin-bottom:8px;">
             <input type="date" id="reminder-date" class="brain-input">
           </div>
-          <button onclick="addReminder()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--green); color:white; font-family:'Nunito',sans-serif; font-size:14px; font-weight:900; cursor:pointer;">💾 Save Reminder</button>
+          <button onclick="addReminder()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--green); color:white; font-family:'Inter',sans-serif; font-size:14px; font-weight:900; cursor:pointer;">💾 Save Reminder</button>
         </div>
       </div>
     </div>
@@ -855,11 +852,11 @@ body {
       </div>
       <div id="pdf-links-body" style="padding:16px 18px;">
         <div id="pdf-link-list"></div>
-        <div style="background:#F0F6FF; border-radius:14px; padding:14px; margin-top:10px; border:2px dashed #BDDAFF;">
+        <div style="background:#EBF2FC; border-radius:14px; padding:14px; margin-top:10px; border:2px dashed #BDDAFF;">
           <div style="font-size:13px; font-weight:900; color:var(--blue); margin-bottom:10px;">➕ Add a PDF / File Link</div>
           <input type="text" id="pdf-link-label" class="brain-input" placeholder="Label (e.g. Pricing Guide, SOP Manual)" style="margin-bottom:8px;">
           <input type="url" id="pdf-link-url" class="brain-input" placeholder="Paste URL or Google Drive link here" style="margin-bottom:8px;">
-          <button onclick="addPdfLink()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--blue); color:white; font-family:'Nunito',sans-serif; font-size:14px; font-weight:900; cursor:pointer;">🔗 Save Link</button>
+          <button onclick="addPdfLink()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--blue); color:white; font-family:'Inter',sans-serif; font-size:14px; font-weight:900; cursor:pointer;">🔗 Save Link</button>
         </div>
       </div>
     </div>
@@ -921,7 +918,7 @@ body {
       <input type="text" id="day-task-name" class="brain-input" placeholder="Task name (e.g. Check & Reply to Emails)">
       
       <div id="day-steps-list" style="margin-bottom:10px;"></div>
-      <button onclick="addDayStep()" style="width:100%; padding:10px; border-radius:12px; border:2px dashed var(--border); background:white; font-family:'Nunito',sans-serif; font-size:13px; font-weight:800; color:var(--muted); cursor:pointer; margin-bottom:10px;">+ Add Step</button>
+      <button onclick="addDayStep()" style="width:100%; padding:10px; border-radius:12px; border:2px dashed var(--border); background:white; font-family:'Inter',sans-serif; font-size:13px; font-weight:800; color:var(--muted); cursor:pointer; margin-bottom:10px;">+ Add Step</button>
 
       <div class="brain-add-title" style="font-size:14px; margin-bottom:8px;">3️⃣ Attach media (optional):</div>
       <div class="media-upload-row">
@@ -1086,84 +1083,22 @@ body {
 
 <script>
 /* ========== GEMINI API ========== */
-// IMPORTANT: rotate this key at https://aistudio.google.com/apikey before re-publishing.
-// The previous key was exposed publicly on GitHub and may have been used by others.
 const GEMINI_KEY = 'AIzaSyBjjeifjxLhf21zN64U69E1zDWNVrtuykw';
-// Try models in order. If one runs out of free quota, automatically fall back to the next.
-const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-1.5-flash'];
-const GEMINI_URL_FOR = m => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${GEMINI_KEY}`;
-
-/* ===== Rate limiter (free tier safety net) =====
-   Free tier on Gemini Flash is roughly 10 requests/minute and a few hundred/day.
-   We throttle locally so one long upload can't burn through the day's quota in seconds. */
-const RL = {
-  perMin: 8,           // stay under the ~10/min free cap
-  perDay: 200,         // conservative daily cap
-  recent: [],          // timestamps in last 60s
-  loadDay() {
-    try {
-      const today = new Date().toISOString().slice(0,10);
-      const raw = JSON.parse(localStorage.getItem('geminiUsage') || '{}');
-      if (raw.day !== today) return { day: today, count: 0 };
-      return raw;
-    } catch(e) { return { day: new Date().toISOString().slice(0,10), count: 0 }; }
-  },
-  saveDay(u) { try { localStorage.setItem('geminiUsage', JSON.stringify(u)); } catch(e) {} },
-  async wait() {
-    const now = Date.now();
-    this.recent = this.recent.filter(t => now - t < 60000);
-    const usage = this.loadDay();
-    if (usage.count >= this.perDay) {
-      throw new Error(`DAILY_LIMIT::You've used today's free AI quota (${this.perDay} requests). It resets at midnight UTC. To get more, add a free Google Cloud billing account at https://aistudio.google.com/apikey (you won't be charged on the free tier).`);
-    }
-    if (this.recent.length >= this.perMin) {
-      const waitMs = 60000 - (now - this.recent[0]) + 250;
-      await new Promise(r => setTimeout(r, waitMs));
-      return this.wait();
-    }
-    this.recent.push(Date.now());
-    usage.count++;
-    this.saveDay(usage);
-  },
-  remainingToday() {
-    const u = this.loadDay();
-    return Math.max(0, this.perDay - u.count);
-  }
-};
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
 
 async function callGemini(systemPrompt, userMessage, maxTokens) {
-  await RL.wait();
   const body = {
     contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userMessage }] }],
     generationConfig: { maxOutputTokens: maxTokens || 1000, temperature: 0.7 }
   };
-  let lastErr = null;
-  for (const model of GEMINI_MODELS) {
-    try {
-      const res = await fetch(GEMINI_URL_FOR(model), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      const data = await res.json();
-      if (data.error) {
-        const msg = (data.error.message || '').toLowerCase();
-        // If this model is out of quota or unavailable, try the next one
-        if (res.status === 429 || msg.includes('quota') || msg.includes('not found') || msg.includes('unsupported')) {
-          lastErr = data.error.message;
-          continue;
-        }
-        throw new Error(data.error.message);
-      }
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    } catch(e) {
-      lastErr = e.message;
-      // network / parse errors — try next model too
-      continue;
-    }
-  }
-  // All models failed
-  throw new Error(`QUOTA::Free AI quota is used up on all available models. Try again in a few minutes, or get more free quota by linking a billing account at https://aistudio.google.com/apikey (Google won't charge you on the free tier). Details: ${lastErr || 'unknown'}`);
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 let lang = 'tl';
@@ -1552,10 +1487,10 @@ Respond in this exact JSON format only, no other text:
             <div class="flag-text">${f.text}</div>
           </div>
         `).join('')}
-        <button onclick="backToCheckerSelect()" style="width:100%; margin-top:14px; padding:14px; border-radius:14px; border:none; background:var(--teal); color:white; font-family:'Nunito',sans-serif; font-size:15px; font-weight:900; cursor:pointer;">Check Another Piece of Work</button>
+        <button onclick="backToCheckerSelect()" style="width:100%; margin-top:14px; padding:14px; border-radius:14px; border:none; background:var(--teal); color:white; font-family:'Inter',sans-serif; font-size:15px; font-weight:900; cursor:pointer;">Check Another Piece of Work</button>
       `;
     } else {
-      resultDiv.innerHTML = `<div style="font-size:14px; line-height:1.7; padding:4px 0;">${text}</div><button onclick="backToCheckerSelect()" style="width:100%; margin-top:14px; padding:14px; border-radius:14px; border:none; background:var(--teal); color:white; font-family:'Nunito',sans-serif; font-size:15px; font-weight:900; cursor:pointer;">Check Another</button>`;
+      resultDiv.innerHTML = `<div style="font-size:14px; line-height:1.7; padding:4px 0;">${text}</div><button onclick="backToCheckerSelect()" style="width:100%; margin-top:14px; padding:14px; border-radius:14px; border:none; background:var(--teal); color:white; font-family:'Inter',sans-serif; font-size:15px; font-weight:900; cursor:pointer;">Check Another</button>`;
     }
   } catch(e) {
     resultDiv.innerHTML = '<div style="color:var(--red); font-size:14px; padding:10px;">Connection error. Please check your internet and try again.</div>';
@@ -2099,7 +2034,7 @@ function showToast(msg) {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'va-toast';
-    toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1E1E1E;color:white;padding:12px 22px;border-radius:30px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity .3s;';
+    toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1E1E1E;color:white;padding:12px 22px;border-radius:30px;font-family:Inter,sans-serif;font-size:14px;font-weight:800;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity .3s;';
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
@@ -2436,12 +2371,7 @@ Guidelines:
     btn.disabled = false;
 
   } catch(err) {
-    let msg = err.message || String(err);
-    // Strip our internal prefix tags and show clean text
-    if (msg.startsWith('DAILY_LIMIT::')) msg = '⏳ ' + msg.replace('DAILY_LIMIT::', '');
-    else if (msg.startsWith('QUOTA::')) msg = '⏳ ' + msg.replace('QUOTA::', '');
-    else if (/quota|rate|429/i.test(msg)) msg = '⏳ Free AI quota hit. Try again in a minute, or get more free quota at https://aistudio.google.com/apikey';
-    setUploadProgress(0, '❌ ' + msg);
+    setUploadProgress(0, '❌ Error: ' + err.message);
     btn.textContent = '🚀 Upload & Generate Tasks, Rules & Quiz';
     btn.disabled = false;
   }
@@ -2878,7 +2808,7 @@ function showSyncStatus(state) {
     syncStatusEl.id = 'sync-status';
     syncStatusEl.style.cssText = `
       position:fixed; top:0; right:0; z-index:999;
-      font-size:10px; font-weight:900; font-family:'Nunito',sans-serif;
+      font-size:10px; font-weight:900; font-family:'Inter',sans-serif;
       padding:3px 8px; border-radius:0 0 0 10px; letter-spacing:.4px;
       transition: background .4s;
     `;
