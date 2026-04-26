@@ -1114,15 +1114,18 @@ async function callGemini(systemPrompt, userMessage, maxTokens, jsonMode) {
   if (!key) {
     throw new Error('No API key. Go to 🧠 Brain tab → tap ⚙️ API Key → paste your free Groq key from console.groq.com');
   }
+  // Use the smarter 70b model for complex JSON tasks, fast model for simple replies
+  const model = jsonMode ? 'llama-3.3-70b-versatile' : 'llama-3.1-8b-instant';
   const body = {
-    model: 'llama-3.1-8b-instant',
+    model: model,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user',   content: userMessage }
     ],
     max_tokens: maxTokens || 1000,
-    temperature: 0.4,
-    ...(jsonMode ? { response_format: { type: 'json_object' } } : {})
+    temperature: 0.3
+    // NOTE: No response_format here — it causes JSON generation errors on complex schemas.
+    // We extract JSON reliably using regex in the caller instead.
   };
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -2376,18 +2379,18 @@ Guidelines:
 
     let parsed;
     try {
-      // Try direct parse first (works when responseMimeType forces clean JSON)
-      let clean = rawText.replace(/```json|```/g, '').trim();
-      // If still not valid JSON, extract the first {...} block
-      if (!clean.startsWith('{')) {
-        const match = clean.match(/\{[\s\S]*\}/);
-        if (match) clean = match[0];
+      // Strip markdown code fences
+      let clean = rawText.replace(/```json\s*/gi, '').replace(/```/g, '').trim();
+      // Find the outermost { ... } block — handles any leading/trailing text
+      const start = clean.indexOf('{');
+      const end   = clean.lastIndexOf('}');
+      if (start !== -1 && end !== -1 && end > start) {
+        clean = clean.slice(start, end + 1);
       }
       parsed = JSON.parse(clean);
     } catch(e) {
-      // Show first 300 chars of raw response to help diagnose
-      const preview = (rawText || '(empty response)').substring(0, 300);
-      throw new Error('AI returned unexpected format. Raw: ' + preview);
+      const preview = (rawText || '(empty)').substring(0, 400);
+      throw new Error('Could not read AI response. Details: ' + preview);
     }
 
     setUploadProgress(90, '🔄 Updating all tabs...');
