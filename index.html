@@ -867,8 +867,26 @@ body {
   <!-- MARY'S BRAIN -->
   <div class="panel" id="p-brain">
     <div class="brain-intro">
-      <h2>🧠 Mary's Brain</h2>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <h2 style="margin-bottom:0;">🧠 Mary's Brain</h2>
+        <button onclick="toggleApiSettings()" style="background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.5);border-radius:8px;color:white;font-size:12px;font-weight:800;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;">⚙️ API Key</button>
+      </div>
       <p>Mary — type your preferences, instructions, and important info here. Your VA can then ask the AI and get EXACTLY what you told it.</p>
+    </div>
+
+    <!-- API KEY SETTINGS BOX -->
+    <div id="api-settings-box" style="display:none;background:white;border-radius:12px;padding:18px;margin-bottom:16px;border:2px solid var(--primary);box-shadow:0 4px 16px rgba(26,47,90,0.1);">
+      <div style="font-size:15px;font-weight:900;color:var(--primary);margin-bottom:4px;">🔑 Groq API Key — Free Forever</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+        1. Go to <a href="https://console.groq.com" target="_blank" style="color:var(--primary);font-weight:800;">console.groq.com</a> → sign up free<br>
+        2. Click <strong>API Keys</strong> → <strong>Create API Key</strong><br>
+        3. Copy the key (starts with <code>gsk_</code>) and paste below
+      </div>
+      <input type="text" id="groq-key-input" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        style="width:100%;border:2px solid var(--border);border-radius:10px;padding:11px 14px;font-family:monospace;font-size:13px;outline:none;margin-bottom:10px;background:#f8fafc;"
+        oninput="document.getElementById('api-save-status').textContent=''">
+      <button onclick="saveGroqKey()" style="width:100%;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-family:'Inter',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">💾 Save Key</button>
+      <div id="api-save-status" style="font-size:12px;font-weight:800;margin-top:8px;text-align:center;min-height:18px;"></div>
     </div>
 
     <div class="brain-ask-section">
