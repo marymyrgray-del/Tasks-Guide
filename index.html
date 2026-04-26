@@ -1082,23 +1082,38 @@ body {
 </nav>
 
 <script>
-/* ========== GEMINI API ========== */
-const GEMINI_KEY = 'AIzaSyBjjeifjxLhf21zN64U69E1zDWNVrtuykw';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+/* ========== AI API — Groq (free, no billing ever) ========== */
+// Get your FREE key: https://console.groq.com → API Keys → Create key
+// Paste it in the ⚙️ API Key button inside the Brain tab, OR hardcode below:
+const DEFAULT_GROQ_KEY = '';
 
-async function callGemini(systemPrompt, userMessage, maxTokens) {
+function getGroqKey() {
+  return localStorage.getItem('vaGroqKey') || DEFAULT_GROQ_KEY;
+}
+
+async function callGemini(systemPrompt, userMessage, maxTokens, jsonMode) {
+  const key = getGroqKey();
+  if (!key) {
+    throw new Error('No API key. Go to 🧠 Brain tab → tap ⚙️ API Key → paste your free Groq key from console.groq.com');
+  }
   const body = {
-    contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userMessage }] }],
-    generationConfig: { maxOutputTokens: maxTokens || 1000, temperature: 0.7 }
+    model: 'llama-3.1-8b-instant',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user',   content: userMessage }
+    ],
+    max_tokens: maxTokens || 1000,
+    temperature: 0.4,
+    ...(jsonMode ? { response_format: { type: 'json_object' } } : {})
   };
-  const res = await fetch(GEMINI_URL, {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
     body: JSON.stringify(body)
   });
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  if (data.error) throw new Error('Groq error: ' + (data.error.message || JSON.stringify(data.error)));
+  return data.choices?.[0]?.message?.content || '';
 }
 
 let lang = 'tl';
@@ -2029,6 +2044,29 @@ function confirmAddToDay() {
     : '✅ Added to ' + atdSelectedDays.map(d => d.toUpperCase()).join(', ') + '!');
 }
 
+function toggleApiSettings() {
+  const box = document.getElementById('api-settings-box');
+  const inp = document.getElementById('groq-key-input');
+  if (box.style.display === 'none') {
+    box.style.display = 'block';
+    inp.value = localStorage.getItem('vaGroqKey') || '';
+    inp.focus();
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function saveGroqKey() {
+  const val = document.getElementById('groq-key-input').value.trim();
+  const status = document.getElementById('api-save-status');
+  if (!val) { status.style.color='var(--red)'; status.textContent='⚠️ Please paste a key first.'; return; }
+  if (!val.startsWith('gsk_')) { status.style.color='var(--red)'; status.textContent='⚠️ Groq keys start with gsk_'; return; }
+  localStorage.setItem('vaGroqKey', val);
+  status.style.color='var(--green)';
+  status.textContent='✅ Key saved! You can now upload files.';
+  setTimeout(() => { document.getElementById('api-settings-box').style.display='none'; }, 1800);
+}
+
 function showToast(msg) {
   let toast = document.getElementById('va-toast');
   if (!toast) {
@@ -2314,16 +2352,24 @@ Guidelines:
 
     setUploadProgress(45, '🤖 AI is analyzing content...');
 
-    const rawText = await callGemini(systemPrompt, 'Here is the training document content:\n\n' + extractedText, 4000);
+    const rawText = await callGemini(systemPrompt, 'Here is the training document content:\n\n' + extractedText, 4000, true);
 
     setUploadProgress(75, '✍️ Building tasks, rules & quiz...');
 
     let parsed;
     try {
-      const clean = rawText.replace(/```json|```/g, '').trim();
+      // Try direct parse first (works when responseMimeType forces clean JSON)
+      let clean = rawText.replace(/```json|```/g, '').trim();
+      // If still not valid JSON, extract the first {...} block
+      if (!clean.startsWith('{')) {
+        const match = clean.match(/\{[\s\S]*\}/);
+        if (match) clean = match[0];
+      }
       parsed = JSON.parse(clean);
     } catch(e) {
-      throw new Error('AI returned unexpected format. Please try again.');
+      // Show first 300 chars of raw response to help diagnose
+      const preview = (rawText || '(empty response)').substring(0, 300);
+      throw new Error('AI returned unexpected format. Raw: ' + preview);
     }
 
     setUploadProgress(90, '🔄 Updating all tabs...');
